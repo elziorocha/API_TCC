@@ -1,0 +1,19 @@
+# Ignorar dependências
+node_modules/
+
+# Ignorar arquivos de ambiente
+.env
+.env.*  # Ex: .env.local, .env.development
+
+# Ignorar logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignorar diretórios do sistema
+.DS_Store
+Thumbs.db
+
+# Ignorar build
+dist/
+build/
