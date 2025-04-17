@@ -5,7 +5,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Aluno_Documento } from "./Aluno_documento";
+import { Aluno_Documento } from "./Aluno_Documento";
 import { Aluno_Endereco } from "./Aluno_Endereco";
 import { Aluno_Responsavel } from "./Aluno_Responsavel";
 
