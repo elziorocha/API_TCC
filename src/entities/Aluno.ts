@@ -26,7 +26,11 @@ export class Aluno {
   @Column({ type: "date", nullable: false })
   data_nascimento: Date;
 
-  @Column({ type: "timestamp" })
+  @Column({
+    type: "timestamp",
+    default: () => "CURRENT_TIMESTAMP",
+    update: false,
+  })
   criado_em: Date;
 
   @OneToOne(() => Aluno_Documento, {
