@@ -5,19 +5,23 @@ export class AlunoController {
   async create(req: Request, res: Response) {
     const { email, senha, nome, data_nascimento, criado_em } = req.body;
 
-    if (!email || !senha || !nome || !data_nascimento) {
-      res.status(400).json({ message: "Campo obrigatório em falta!" });
-      return;
+    const alunoData = {
+      email,
+      senha,
+      nome,
+      data_nascimento,
+      criado_em,
+    };
+
+    for (const [field, value] of Object.entries(alunoData)) {
+      if (!value) {
+        res.status(400).json({ message: `Campo ${field} em falta!` });
+        return;
+      }
     }
 
     try {
-      const newAluno = alunoRepository.create({
-        email,
-        senha,
-        nome,
-        data_nascimento,
-        criado_em,
-      });
+      const newAluno = alunoRepository.create(alunoData);
 
       await alunoRepository.save(newAluno);
 
@@ -26,6 +30,7 @@ export class AlunoController {
     } catch (error) {
       console.log(error);
       res.status(500).json({ message: "Erro ao criar Aluno" });
+      return;
     }
   }
 }
