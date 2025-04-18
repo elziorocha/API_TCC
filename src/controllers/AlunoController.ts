@@ -3,12 +3,14 @@ import { alunoRepository } from "../repositories/alunoRepository";
 
 export class AlunoController {
   async create(req: Request, res: Response) {
-    const { email, senha, nome, data_nascimento, criado_em } = req.body;
+    const { email, senha, nome, data_nascimento, telefone, criado_em } =
+      req.body;
 
     const alunoData = {
       email,
       senha,
       nome,
+      telefone,
       data_nascimento,
       criado_em,
     };

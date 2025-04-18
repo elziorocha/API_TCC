@@ -23,6 +23,9 @@ export class Aluno {
   @Column({ type: "text", nullable: false })
   nome: string;
 
+  @Column({ length: 11, unique: true, nullable: false })
+  telefone: string;
+
   @Column({ type: "date", nullable: false })
   data_nascimento: Date;
 

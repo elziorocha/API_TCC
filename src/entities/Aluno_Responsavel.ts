@@ -6,7 +6,7 @@ export class Aluno_Responsavel {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, unique: true })
   cpf_mae: string;
 
   @Column({ type: "text", nullable: false })
