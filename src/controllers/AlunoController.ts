@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { alunoRepository } from "../repositories/alunoRepository";
+import { AlunoRepository } from "../repositories/AlunoRepository";
 
 export class AlunoController {
   async create(req: Request, res: Response) {
@@ -23,11 +23,11 @@ export class AlunoController {
     }
 
     try {
-      const newAluno = alunoRepository.create(alunoData);
+      const novoAluno = AlunoRepository.create(alunoData);
 
-      await alunoRepository.save(newAluno);
+      await AlunoRepository.save(novoAluno);
 
-      res.status(201).json(newAluno);
+      res.status(201).json(novoAluno);
       return;
     } catch (error) {
       console.log(error);
