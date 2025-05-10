@@ -1,19 +1,18 @@
 import { Request, Response } from "express";
 import { AlunoRepository } from "../repositories/AlunoRepository";
 
+interface Aluno {
+  email: string;
+  senha: string;
+  nome: string;
+  telefone: string;
+  data_nascimento: Date;
+  criado_em: Date;
+}
+
 export class AlunoController {
   async create(req: Request, res: Response) {
-    const { email, senha, nome, data_nascimento, telefone, criado_em } =
-      req.body;
-
-    const alunoData = {
-      email,
-      senha,
-      nome,
-      telefone,
-      data_nascimento,
-      criado_em,
-    };
+    const alunoData = req.body as Aluno;
 
     for (const [field, value] of Object.entries(alunoData)) {
       if (!value) {
@@ -24,7 +23,6 @@ export class AlunoController {
 
     try {
       const novoAluno = AlunoRepository.create(alunoData);
-
       await AlunoRepository.save(novoAluno);
 
       res.status(201).json(novoAluno);

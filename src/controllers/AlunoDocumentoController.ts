@@ -22,6 +22,13 @@ export class AlunoDocumentoController {
       });
     }
 
+    for (const [field, value] of Object.entries(alunoDocumentoData)) {
+      if (!value) {
+        res.status(400).json({ message: `Campo ${field} em falta!` });
+        return;
+      }
+    }
+
     try {
       const associarAoAluno = await AlunoRepository.findOneBy({
         id: Number(alunoId),
@@ -29,8 +36,7 @@ export class AlunoDocumentoController {
       if (!associarAoAluno) {
         res.status(404).json({ message: "Aluno não encontrado" });
         return;
-      }
-      if (associarAoAluno.aluno_documento) {
+      } else if (associarAoAluno.aluno_documento) {
         res
           .status(422)
           .json({ message: "Aluno já possui documentos cadastrados." });
