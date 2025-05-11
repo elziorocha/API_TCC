@@ -8,6 +8,7 @@ import {
 import { Aluno_Documento } from "./Aluno_Documento";
 import { Aluno_Endereco } from "./Aluno_Endereco";
 import { Aluno_Responsavel } from "./Aluno_Responsavel";
+import { Length, Matches } from "class-validator";
 
 @Entity("alunos")
 export class Aluno {
@@ -21,9 +22,13 @@ export class Aluno {
   senha: string;
 
   @Column({ type: "text", nullable: false })
+  @Matches(/^[A-Za-zÀ-ÿ\s]+$/, {
+    message: "O campo deve conter apenas letras.",
+  })
   nome: string;
 
   @Column({ length: 11, unique: true, nullable: false })
+  @Length(10, 11, { message: "O Telefone deve conter entre 10 e 11 dígitos." })
   telefone: string;
 
   @Column({ type: "date", nullable: false })

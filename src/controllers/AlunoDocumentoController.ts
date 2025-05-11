@@ -16,12 +16,6 @@ export class AlunoDocumentoController {
     const alunoDocumentoData = req.body as AlunoDocumento;
     const { alunoId } = req.params;
 
-    if (!alunoDocumentoData.cpf || !alunoDocumentoData.rg) {
-      res.status(422).json({
-        message: "Campos de CPF e RG são obrigatórios.",
-      });
-    }
-
     for (const [field, value] of Object.entries(alunoDocumentoData)) {
       if (!value) {
         res.status(400).json({ message: `Campo ${field} em falta!` });

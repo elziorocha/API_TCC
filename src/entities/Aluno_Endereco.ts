@@ -1,5 +1,6 @@
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Aluno } from "./Aluno";
+import { Length, Matches } from "class-validator";
 
 @Entity("aluno_enderecos")
 export class Aluno_Endereco {
@@ -7,6 +8,8 @@ export class Aluno_Endereco {
   id: number;
 
   @Column({ nullable: false })
+  @Length(8, 8, { message: "O CEP deve conter exatamente 8 dígitos." })
+  @Matches(/^\d{8}$/, { message: "O CEP deve conter apenas números." })
   cep: string;
 
   @Column({ nullable: false })
