@@ -54,4 +54,30 @@ export class AlunoDocumentoController {
       return;
     }
   }
+
+  async list(req: Request, res: Response) {
+    const { alunoId } = req.params;
+
+    try {
+      const buscarAlunoDocumento = await AlunoRepository.findOne({
+        where: {
+          id: Number(alunoId),
+        },
+        relations: ["aluno_documento"],
+      });
+
+      if (!buscarAlunoDocumento) {
+        res
+          .status(404)
+          .json({ message: `Erro ao encontrar documento do aluno ${alunoId}` });
+        return;
+      }
+
+      res.status(200).json(buscarAlunoDocumento.aluno_documento);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "Erro ao buscar Documento de aluno" });
+      return;
+    }
+  }
 }

@@ -51,4 +51,30 @@ export class AlunoEnderecoController {
       return;
     }
   }
+
+  async list(req: Request, res: Response) {
+    const { alunoId } = req.params;
+
+    try {
+      const buscarAlunoEndereco = await AlunoRepository.findOne({
+        where: {
+          id: Number(alunoId),
+        },
+        relations: ["aluno_endereco"],
+      });
+
+      if (!buscarAlunoEndereco) {
+        res
+          .status(404)
+          .json({ message: `Erro ao encontrar endereço do aluno ${alunoId}` });
+        return;
+      }
+
+      res.status(200).json(buscarAlunoEndereco.aluno_endereco);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "Erro ao buscar Endereço de aluno" });
+      return;
+    }
+  }
 }

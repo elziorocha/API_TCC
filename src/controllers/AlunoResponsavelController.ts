@@ -52,4 +52,30 @@ export class AlunoResponsavelController {
       return;
     }
   }
+
+  async list(req: Request, res: Response) {
+    const { alunoId } = req.params;
+
+    try {
+      const buscarAlunoResponsavel = await AlunoRepository.findOne({
+        where: {
+          id: Number(alunoId),
+        },
+        relations: ["aluno_responsavel"],
+      });
+
+      if (!buscarAlunoResponsavel) {
+        res.status(404).json({
+          message: `Erro ao encontrar responsável do aluno ${alunoId}`,
+        });
+        return;
+      }
+
+      res.status(200).json(buscarAlunoResponsavel.aluno_responsavel);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "Erro ao buscar Responsável de aluno" });
+      return;
+    }
+  }
 }

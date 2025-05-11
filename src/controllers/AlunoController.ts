@@ -33,4 +33,16 @@ export class AlunoController {
       return;
     }
   }
+
+  async list(req: Request, res: Response) {
+    try {
+      const buscarAluno = await AlunoRepository.find();
+
+      res.status(201).json(buscarAluno);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "Erro ao buscar Aluno" });
+      return;
+    }
+  }
 }
