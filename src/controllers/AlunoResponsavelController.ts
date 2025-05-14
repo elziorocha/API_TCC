@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { AlunoRepository } from "../repositories/AlunoRepository";
 import { AlunoResponsavelRepository } from "../repositories/AlunoResponsavelRepository";
+import { NotFoundError, UnprocessableEntityError } from "../helpers/api-errors";
 
 interface AlunoResponsavel {
   cpf_mae: string;
@@ -14,68 +15,44 @@ export class AlunoResponsavelController {
     const alunoResponsavelData = req.body as AlunoResponsavel;
     const { alunoId } = req.params;
 
-    for (const [field, value] of Object.entries(alunoResponsavelData)) {
-      if (!value) {
-        res.status(400).json({ message: `Campo ${field} em falta!` });
-        return;
-      }
+    const associarAoAluno = await AlunoRepository.findOneBy({
+      id: Number(alunoId),
+    });
+
+    if (!associarAoAluno) {
+      throw new NotFoundError("Aluno não encontrado.");
+    } else if (associarAoAluno.aluno_responsavel) {
+      throw new UnprocessableEntityError(
+        "Aluno já possui responsáveis cadastrados."
+      );
     }
 
-    try {
-      const associarAoAluno = await AlunoRepository.findOneBy({
-        id: Number(alunoId),
-      });
+    const novoAlunoResponsavel =
+      AlunoResponsavelRepository.create(alunoResponsavelData);
+    await AlunoResponsavelRepository.save(novoAlunoResponsavel);
 
-      if (!associarAoAluno) {
-        res.status(404).json({ message: "Aluno não encontrado" });
-        return;
-      } else if (associarAoAluno.aluno_responsavel) {
-        res
-          .status(422)
-          .json({ message: "Aluno já possui responsáveis cadastrados." });
-        return;
-      }
+    associarAoAluno.aluno_responsavel = novoAlunoResponsavel;
+    await AlunoRepository.save(associarAoAluno);
 
-      const novoAlunoResponsavel =
-        AlunoResponsavelRepository.create(alunoResponsavelData);
-      await AlunoResponsavelRepository.save(novoAlunoResponsavel);
-
-      associarAoAluno.aluno_responsavel = novoAlunoResponsavel;
-      await AlunoRepository.save(associarAoAluno);
-
-      res.status(201).json(novoAlunoResponsavel);
-    } catch (error) {
-      console.log(error);
-      res
-        .status(500)
-        .json({ message: "Erro ao cadastrar Responsável de Aluno" });
-      return;
-    }
+    res.status(201).json(novoAlunoResponsavel);
   }
 
   async list(req: Request, res: Response) {
     const { alunoId } = req.params;
 
-    try {
-      const buscarAlunoResponsavel = await AlunoRepository.findOne({
-        where: {
-          id: Number(alunoId),
-        },
-        relations: ["aluno_responsavel"],
-      });
+    const buscarAlunoResponsavel = await AlunoRepository.findOne({
+      where: {
+        id: Number(alunoId),
+      },
+      relations: ["aluno_responsavel"],
+    });
 
-      if (!buscarAlunoResponsavel) {
-        res.status(404).json({
-          message: `Erro ao encontrar responsável do aluno ${alunoId}`,
-        });
-        return;
-      }
-
-      res.status(200).json(buscarAlunoResponsavel.aluno_responsavel);
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ message: "Erro ao buscar Responsável de aluno" });
-      return;
+    if (!buscarAlunoResponsavel) {
+      throw new NotFoundError(
+        `Erro ao encontrar responsável do aluno ${alunoId}`
+      );
     }
+
+    res.status(200).json(buscarAlunoResponsavel.aluno_responsavel);
   }
 }

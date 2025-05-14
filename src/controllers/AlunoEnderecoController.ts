@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { AlunoEnderecoRepository } from "../repositories/AlunoEnderecoRepository";
 import { AlunoRepository } from "../repositories/AlunoRepository";
+import { NotFoundError, UnprocessableEntityError } from "../helpers/api-errors";
 
 interface AlunoEndereco {
   cep: string;
@@ -15,66 +16,41 @@ export class AlunoEnderecoController {
     const alunoEnderecoData = req.body as AlunoEndereco;
     const { alunoId } = req.params;
 
-    for (const [field, value] of Object.entries(alunoEnderecoData)) {
-      if (!value) {
-        res.status(400).json({ message: `Campo ${field} em falta!` });
-        return;
-      }
+    const associarAoAluno = await AlunoRepository.findOneBy({
+      id: Number(alunoId),
+    });
+
+    if (!associarAoAluno) {
+      throw new NotFoundError("Aluno não encontrado.");
+    } else if (associarAoAluno.aluno_endereco) {
+      throw new UnprocessableEntityError(
+        "Aluno já possui endereços cadastrados."
+      );
     }
 
-    try {
-      const associarAoAluno = await AlunoRepository.findOneBy({
-        id: Number(alunoId),
-      });
+    const novoAlunoEndereco = AlunoEnderecoRepository.create(alunoEnderecoData);
+    await AlunoEnderecoRepository.save(novoAlunoEndereco);
 
-      if (!associarAoAluno) {
-        res.status(404).json({ message: "Aluno não encontrado" });
-        return;
-      } else if (associarAoAluno.aluno_endereco) {
-        res
-          .status(422)
-          .json({ message: "Aluno já possui endereços cadastrados." });
-        return;
-      }
+    associarAoAluno.aluno_endereco = novoAlunoEndereco;
+    await AlunoRepository.save(associarAoAluno);
 
-      const novoAlunoEndereco =
-        AlunoEnderecoRepository.create(alunoEnderecoData);
-      await AlunoEnderecoRepository.save(novoAlunoEndereco);
-
-      associarAoAluno.aluno_endereco = novoAlunoEndereco;
-      await AlunoRepository.save(associarAoAluno);
-
-      res.status(201).json(novoAlunoEndereco);
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ message: "Erro ao cadastrar Endereço de Aluno" });
-      return;
-    }
+    res.status(201).json(novoAlunoEndereco);
   }
 
   async list(req: Request, res: Response) {
     const { alunoId } = req.params;
 
-    try {
-      const buscarAlunoEndereco = await AlunoRepository.findOne({
-        where: {
-          id: Number(alunoId),
-        },
-        relations: ["aluno_endereco"],
-      });
+    const buscarAlunoEndereco = await AlunoRepository.findOne({
+      where: {
+        id: Number(alunoId),
+      },
+      relations: ["aluno_endereco"],
+    });
 
-      if (!buscarAlunoEndereco) {
-        res
-          .status(404)
-          .json({ message: `Erro ao encontrar endereço do aluno ${alunoId}` });
-        return;
-      }
-
-      res.status(200).json(buscarAlunoEndereco.aluno_endereco);
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ message: "Erro ao buscar Endereço de aluno" });
-      return;
+    if (!buscarAlunoEndereco) {
+      throw new NotFoundError(`Erro ao encontrar endereço do aluno ${alunoId}`);
     }
+
+    res.status(200).json(buscarAlunoEndereco.aluno_endereco);
   }
 }

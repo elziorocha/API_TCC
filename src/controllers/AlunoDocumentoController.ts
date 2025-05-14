@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { AlunoRepository } from "../repositories/AlunoRepository";
 import { AlunoDocumentoRepository } from "../repositories/AlunoDocumentoRepository";
+import { NotFoundError, UnprocessableEntityError } from "../helpers/api-errors";
 
 interface AlunoDocumento {
   rg: string;
@@ -16,68 +17,45 @@ export class AlunoDocumentoController {
     const alunoDocumentoData = req.body as AlunoDocumento;
     const { alunoId } = req.params;
 
-    for (const [field, value] of Object.entries(alunoDocumentoData)) {
-      if (!value) {
-        res.status(400).json({ message: `Campo ${field} em falta!` });
-        return;
-      }
+    const associarAoAluno = await AlunoRepository.findOneBy({
+      id: Number(alunoId),
+    });
+
+    if (!associarAoAluno) {
+      throw new NotFoundError("Aluno não encontrado.");
+    } else if (associarAoAluno.aluno_documento) {
+      throw new UnprocessableEntityError(
+        "Aluno já possui documentos cadastrados."
+      );
     }
 
-    try {
-      const associarAoAluno = await AlunoRepository.findOneBy({
-        id: Number(alunoId),
-      });
-      if (!associarAoAluno) {
-        res.status(404).json({ message: "Aluno não encontrado" });
-        return;
-      } else if (associarAoAluno.aluno_documento) {
-        res
-          .status(422)
-          .json({ message: "Aluno já possui documentos cadastrados." });
-        return;
-      }
+    const novoAlunoDocumento =
+      AlunoDocumentoRepository.create(alunoDocumentoData);
+    await AlunoDocumentoRepository.save(novoAlunoDocumento);
 
-      const novoAlunoDocumento =
-        AlunoDocumentoRepository.create(alunoDocumentoData);
-      await AlunoDocumentoRepository.save(novoAlunoDocumento);
+    associarAoAluno.aluno_documento = novoAlunoDocumento;
+    await AlunoRepository.save(associarAoAluno);
 
-      associarAoAluno.aluno_documento = novoAlunoDocumento;
-      await AlunoRepository.save(associarAoAluno);
-
-      res.status(201).json(novoAlunoDocumento);
-      return;
-    } catch (error) {
-      console.log(error);
-      res
-        .status(500)
-        .json({ message: "Erro ao cadastrar documentos de Aluno" });
-      return;
-    }
+    res.status(201).json(novoAlunoDocumento);
+    return;
   }
 
   async list(req: Request, res: Response) {
     const { alunoId } = req.params;
 
-    try {
-      const buscarAlunoDocumento = await AlunoRepository.findOne({
-        where: {
-          id: Number(alunoId),
-        },
-        relations: ["aluno_documento"],
-      });
+    const buscarAlunoDocumento = await AlunoRepository.findOne({
+      where: {
+        id: Number(alunoId),
+      },
+      relations: ["aluno_documento"],
+    });
 
-      if (!buscarAlunoDocumento) {
-        res
-          .status(404)
-          .json({ message: `Erro ao encontrar documento do aluno ${alunoId}` });
-        return;
-      }
-
-      res.status(200).json(buscarAlunoDocumento.aluno_documento);
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ message: "Erro ao buscar Documento de aluno" });
-      return;
+    if (!buscarAlunoDocumento) {
+      throw new NotFoundError(
+        `Erro ao encontrar documento do aluno ${alunoId}`
+      );
     }
+
+    res.status(200).json(buscarAlunoDocumento.aluno_documento);
   }
 }
