@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { AlunoRepository } from "../repositories/AlunoRepository";
-import { NotFoundError, UnprocessableEntityError } from "../helpers/api-errors";
+import { BadRequestError, NotFoundError } from "../helpers/api-errors";
+import bcrypt from "bcrypt";
 
 interface Aluno {
   email: string;
@@ -15,24 +16,29 @@ export class AlunoController {
   async create(req: Request, res: Response) {
     const alunoData = req.body as Aluno;
 
-    const requiredFields: (keyof Aluno)[] = [
-      "email",
-      "senha",
-      "nome",
-      "telefone",
-      "data_nascimento",
-      "criado_em",
-    ];
-    for (const field of requiredFields) {
-      if (!alunoData[field]) {
-        throw new UnprocessableEntityError(`Campo ${field} ausente.`);
-      }
+    const [emailExistente, telefoneExistente] = await Promise.all([
+      AlunoRepository.findOneBy({ email: alunoData.email }),
+      AlunoRepository.findOneBy({ telefone: alunoData.telefone }),
+    ]);
+
+    if (emailExistente) {
+      throw new BadRequestError("Email já cadastrado no sistema.");
+    }
+    if (telefoneExistente) {
+      throw new BadRequestError("Telefone já cadastrado no sistema.");
     }
 
-    const novoAluno = AlunoRepository.create(alunoData);
+    const senhaCriptografada = await bcrypt.hash(alunoData.senha, 10);
+
+    const novoAluno = AlunoRepository.create({
+      ...alunoData,
+      senha: senhaCriptografada,
+    });
     await AlunoRepository.save(novoAluno);
 
-    res.status(201).json(novoAluno);
+    const { senha: _, ...alunoDataSemSenha } = novoAluno;
+
+    res.status(201).json(alunoDataSemSenha);
     return;
   }
 
