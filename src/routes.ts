@@ -3,11 +3,12 @@ import { AlunoController } from "./controllers/AlunoController";
 import { AlunoDocumentoController } from "./controllers/AlunoDocumentoController";
 import { AlunoEnderecoController } from "./controllers/AlunoEnderecoController";
 import { AlunoResponsavelController } from "./controllers/AlunoResponsavelController";
+import { AuthController } from "./controllers/AuthController";
 
 const routes = Router();
 
 routes.post("/api/aluno", new AlunoController().create);
-routes.get("/api/aluno", new AlunoController().list);
+routes.get("/api/aluno/:alunoId", new AlunoController().list);
 
 routes.post(
   "/api/aluno/:alunoId/documento",
@@ -32,5 +33,7 @@ routes.get(
   "/api/aluno/:alunoId/responsavel",
   new AlunoResponsavelController().list
 );
+
+routes.post("/login", new AuthController().login);
 
 export default routes;

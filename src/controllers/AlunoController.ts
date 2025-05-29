@@ -12,6 +12,11 @@ interface Aluno {
   criado_em: Date;
 }
 
+interface Login {
+  email: string;
+  senha: string;
+}
+
 export class AlunoController {
   async create(req: Request, res: Response) {
     const alunoData = req.body as Aluno;
@@ -36,19 +41,43 @@ export class AlunoController {
     });
     await AlunoRepository.save(novoAluno);
 
-    const { senha: _, ...alunoDataSemSenha } = novoAluno;
+    const { senha: _, ...alunoPostDataSemSenha } = novoAluno;
 
-    res.status(201).json(alunoDataSemSenha);
+    res.status(201).json(alunoPostDataSemSenha);
     return;
   }
 
   async list(req: Request, res: Response) {
-    const buscarAluno = await AlunoRepository.find();
+    const { alunoId } = req.params;
 
-    if (buscarAluno.length === 0) {
+    const buscarAluno = await AlunoRepository.findOne({
+      where: {
+        id: Number(alunoId),
+      },
+    });
+
+    if (!buscarAluno) {
       throw new NotFoundError("Nenhum aluno encontrado.");
     }
 
-    res.status(200).json(buscarAluno);
+    const { senha: _, ...alunoGetDataSemSenha } = buscarAluno;
+
+    res.status(200).json(alunoGetDataSemSenha);
   }
+
+  // async login(req: Request, res: Response) {
+  //   const authData = req.body as Login;
+
+  //   const auth = await AlunoRepository.findOneBy({ email: authData.email });
+
+  //   if (!auth) {
+  //     throw new BadRequestError("E-mail ou Senha inválidos.");
+  //   }
+
+  //   const verificarSenha = await bcrypt.compare(authData.senha, auth.senha);
+
+  //   if (!verificarSenha) {
+  //     throw new BadRequestError("E-mail ou Senha inválidos.");
+  //   }
+  // }
 }
