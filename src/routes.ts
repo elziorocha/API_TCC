@@ -4,11 +4,15 @@ import { AlunoDocumentoController } from "./controllers/AlunoDocumentoController
 import { AlunoEnderecoController } from "./controllers/AlunoEnderecoController";
 import { AlunoResponsavelController } from "./controllers/AlunoResponsavelController";
 import { AuthController } from "./controllers/AuthController";
+import { authMiddleware } from "./middlewares/authMiddleware";
 
 const routes = Router();
 
 routes.post("/api/aluno", new AlunoController().create);
 routes.get("/api/aluno/:alunoId", new AlunoController().list);
+
+routes.post("/login", new AuthController().login);
+routes.use(authMiddleware);
 
 routes.post(
   "/api/aluno/:alunoId/documento",
@@ -34,7 +38,6 @@ routes.get(
   new AlunoResponsavelController().list
 );
 
-routes.post("/login", new AuthController().login);
 routes.get("/dashboard", new AuthController().getAluno);
 
 export default routes;

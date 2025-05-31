@@ -36,7 +36,7 @@ export const authMiddleware = async (
     email: alunoAuth.email,
   };
 
-  req.aluno = alunoAuthSemDados;
+  req.alunoLogin = alunoAuthSemDados;
 
   next();
 };

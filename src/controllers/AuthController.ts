@@ -51,6 +51,6 @@ export class AuthController {
   }
 
   async getAluno(req: Request, res: Response) {
-    res.json("Dados do Aluno logado: ");
+    res.json(req.alunoLogin);
   }
 }
