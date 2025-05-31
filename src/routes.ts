@@ -35,5 +35,6 @@ routes.get(
 );
 
 routes.post("/login", new AuthController().login);
+routes.get("/dashboard", new AuthController().getAluno);
 
 export default routes;

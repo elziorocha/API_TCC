@@ -1,12 +1,13 @@
 import { Request, Response } from "express";
 import { AlunoRepository } from "../repositories/AlunoRepository";
-import { BadRequestError } from "../helpers/api-errors";
+import { BadRequestError, UnauthorizedError } from "../helpers/api-errors";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
 interface Login {
   email: string;
   senha: string;
+  id: number;
 }
 
 export class AuthController {
@@ -30,9 +31,13 @@ export class AuthController {
       throw new BadRequestError("E-mail ou Senha inválidos.");
     }
 
-    const token = jwt.sign({ id: alunoAuth.id }, process.env.JWT_PASS ?? "", {
-      expiresIn: "6h",
-    });
+    const authToken = jwt.sign(
+      { id: alunoAuth.id },
+      process.env.JWT_PASS ?? "",
+      {
+        expiresIn: "6h",
+      }
+    );
 
     const alunoAuthSemDados = {
       id: alunoAuth.id,
@@ -41,9 +46,34 @@ export class AuthController {
 
     res.json({
       alunoAuth: alunoAuthSemDados,
-      token: token,
+      token: authToken,
     });
   }
 
-  async getAluno(req: Request, res: Response) {}
+  async getAluno(req: Request, res: Response) {
+    const { authorization } = req.headers;
+
+    if (!authorization) {
+      throw new UnauthorizedError("Não autorizado");
+    }
+
+    const acessoToken = authorization.split(" ")[1];
+
+    const { id } = jwt.verify(acessoToken, process.env.JWT_PASS ?? "") as Login;
+
+    const alunoAuth = await AlunoRepository.findOneBy({
+      id,
+    });
+
+    if (!alunoAuth) {
+      throw new UnauthorizedError("Não autorizado");
+    }
+
+    const alunoAuthSemDados = {
+      id: alunoAuth.id,
+      email: alunoAuth.email,
+    };
+
+    res.json(alunoAuthSemDados);
+  }
 }
