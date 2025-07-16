@@ -7,6 +7,8 @@ export const errorMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
+  console.error('Erro no middleware:', error);
+
   const statusCode = error.statusCode ?? 500;
   const statusMessage = error.statusCode
     ? error.message
