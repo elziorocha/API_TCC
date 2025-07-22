@@ -1,4 +1,5 @@
 import "express-async-errors";
+import cors from 'cors';
 import express from "express";
 import { AppDataSource } from "./data-source";
 import routes from "./routes";
@@ -6,6 +7,9 @@ import { errorMiddleware } from "./middlewares/errorMiddleware";
 
 AppDataSource.initialize().then(() => {
   const app = express();
+  app.use(cors({
+    origin: 'http://localhost:5173'
+  }));
   app.use(express.json());
 
   app.use(routes);

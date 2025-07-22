@@ -8,9 +8,9 @@ import { authMiddleware } from "./middlewares/authMiddleware";
 
 const routes = Router();
 
-routes.post("/api/aluno", new AlunoController().create);
 routes.get("/api/aluno/:alunoId", new AlunoController().list);
 
+routes.post("/api/aluno", new AuthController().create);
 routes.post("/login", new AuthController().login);
 routes.use(authMiddleware);
 
