@@ -8,7 +8,7 @@ import {
 import { Aluno_Documento } from "./Aluno_Documento";
 import { Aluno_Endereco } from "./Aluno_Endereco";
 import { Aluno_Responsavel } from "./Aluno_Responsavel";
-import { Length, Matches } from "class-validator";
+import { IsDate, IsEmail, Length, Matches, MinLength } from "class-validator";
 
 @Entity("alunos")
 export class Aluno {
@@ -16,22 +16,28 @@ export class Aluno {
   id: number;
 
   @Column({ unique: true, nullable: false })
+  @IsEmail({}, { message: "Insira um endereço de email válido." })
   email: string;
 
   @Column({ nullable: false })
+  @MinLength(6, { message: "A senha deve conter pelo menos 6 caracteres." })
   senha: string;
 
   @Column({ type: "text", nullable: false })
   @Matches(/^[A-Za-zÀ-ÿ\s]+$/, {
-    message: "O campo deve conter apenas letras.",
+    message: "O nome deve conter apenas letras.",
   })
   nome: string;
 
   @Column({ length: 11, unique: true, nullable: false })
-  @Length(10, 11, { message: "O Telefone deve conter entre 10 e 11 dígitos." })
+  @Length(11, 11, { message: "O Telefone deve conter 11 dígitos." })
+  @Matches(/^\d+$/, {
+    message: "O telefone deve conter apenas números.",
+  })
   telefone: string;
 
   @Column({ type: "date", nullable: false })
+  @IsDate({ message: "Data de nascimento deve ser uma data válida." })
   data_nascimento: Date;
 
   @Column({
