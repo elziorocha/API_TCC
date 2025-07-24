@@ -10,8 +10,8 @@ const routes = Router();
 
 routes.get("/api/aluno/:alunoId", new AlunoController().list);
 
-routes.post("/api/aluno", new AuthController().create);
-routes.post("/login", new AuthController().login);
+routes.post("/api/aluno/registro", new AuthController().create);
+routes.post("/api/aluno/login", new AuthController().login);
 routes.use(authMiddleware);
 
 routes.post(

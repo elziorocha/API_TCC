@@ -5,25 +5,15 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { validate } from "class-validator";
 import { Aluno as AlunoEntity } from "../entities/Aluno";
-
-interface AlunoLogin {
-  email: string;
-  senha: string;
-  id: number;
-}
-
-interface Aluno {
-  email: string;
-  senha: string;
-  nome: string;
-  telefone: string;
-  data_nascimento: Date;
-  criado_em: Date;
-}
+import { AlunoInterface } from "../interfaces/aluno.interface";
+import { AlunoLoginInterface } from "../interfaces/alunoLogin.interface";
 
 export class AuthController {
-  async create(req: Request, res: Response) {
-    const alunoData = req.body as Aluno;
+  async create(
+    req: Request<{ id: string }, {}, AlunoInterface>,
+    res: Response
+  ) {
+    const alunoData = req.body;
 
     const validacaoAluno = new AlunoEntity();
     validacaoAluno.email = alunoData.email;
@@ -79,8 +69,8 @@ export class AuthController {
     return;
   }
 
-  async login(req: Request, res: Response) {
-    const authData = req.body as AlunoLogin;
+  async login(req: Request<AlunoLoginInterface>, res: Response) {
+    const authData = req.body;
 
     const alunoAuth = await AlunoRepository.findOneBy({
       email: authData.email,

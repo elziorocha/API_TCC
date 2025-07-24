@@ -2,17 +2,14 @@ import { Request, Response } from "express";
 import { AlunoRepository } from "../repositories/AlunoRepository";
 import { AlunoResponsavelRepository } from "../repositories/AlunoResponsavelRepository";
 import { NotFoundError, UnprocessableEntityError } from "../helpers/api-errors";
-
-interface AlunoResponsavel {
-  cpf_mae: string;
-  nome_mae: string;
-  nome_pai: string;
-  nome_responsavel: string;
-}
+import { AlunoResponsavelInterface } from "../interfaces/alunoResponsavel.interface";
 
 export class AlunoResponsavelController {
-  async create(req: Request, res: Response) {
-    const alunoResponsavelData = req.body as AlunoResponsavel;
+  async create(
+    req: Request<{ alunoId: string }, {}, AlunoResponsavelInterface>,
+    res: Response
+  ) {
+    const alunoResponsavelData = req.body;
     const { alunoId } = req.params;
 
     const associarAoAluno = await AlunoRepository.findOneBy({
