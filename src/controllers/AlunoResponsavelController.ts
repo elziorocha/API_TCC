@@ -6,7 +6,7 @@ import { AlunoResponsavelInterface } from "../interfaces/alunoResponsavel.interf
 
 export class AlunoResponsavelController {
   async create(
-    req: Request<{ alunoId: string }, {}, AlunoResponsavelInterface>,
+    req: Request<{ alunoId: string }, any, AlunoResponsavelInterface>,
     res: Response
   ) {
     const alunoResponsavelData = req.body;

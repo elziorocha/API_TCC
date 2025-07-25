@@ -10,7 +10,7 @@ import { AlunoLoginInterface } from "../interfaces/alunoLogin.interface";
 
 export class AuthController {
   async create(
-    req: Request<{ id: string }, {}, AlunoInterface>,
+    req: Request<{ id: string }, any, AlunoInterface>,
     res: Response
   ) {
     const alunoData = req.body;

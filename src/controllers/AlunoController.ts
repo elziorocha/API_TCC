@@ -1,15 +1,6 @@
 import { Request, Response } from "express";
 import { AlunoRepository } from "../repositories/AlunoRepository";
-import { BadRequestError, NotFoundError } from "../helpers/api-errors";
-
-interface Aluno {
-  email: string;
-  senha: string;
-  nome: string;
-  telefone: string;
-  data_nascimento: Date;
-  criado_em: Date;
-}
+import { NotFoundError } from "../helpers/api-errors";
 
 export class AlunoController {
   async list(req: Request, res: Response) {

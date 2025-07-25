@@ -2,18 +2,14 @@ import { Request, Response } from "express";
 import { AlunoEnderecoRepository } from "../repositories/AlunoEnderecoRepository";
 import { AlunoRepository } from "../repositories/AlunoRepository";
 import { NotFoundError, UnprocessableEntityError } from "../helpers/api-errors";
-
-interface AlunoEndereco {
-  cep: string;
-  cidade: string;
-  bairro: string;
-  rua: string;
-  numero: number;
-}
+import { AlunoEnderecoInterface } from "../interfaces/alunoEndereco.interface";
 
 export class AlunoEnderecoController {
-  async create(req: Request, res: Response) {
-    const alunoEnderecoData = req.body as AlunoEndereco;
+  async create(
+    req: Request<{ alunoId: string }, any, AlunoEnderecoInterface>,
+    res: Response
+  ) {
+    const alunoEnderecoData = req.body;
     const { alunoId } = req.params;
 
     const associarAoAluno = await AlunoRepository.findOneBy({

@@ -2,19 +2,14 @@ import { Request, Response } from "express";
 import { AlunoRepository } from "../repositories/AlunoRepository";
 import { AlunoDocumentoRepository } from "../repositories/AlunoDocumentoRepository";
 import { NotFoundError, UnprocessableEntityError } from "../helpers/api-errors";
-
-interface AlunoDocumento {
-  rg: string;
-  cpf: string;
-  orgao_emissor: string;
-  comprovante_matricula: string;
-  atestado_frequencia: string;
-  tipo_cartao: "EDUCARD" | "VEM";
-}
+import { AlunoDocumentoInterface } from "../interfaces/alunoDocumento.interface";
 
 export class AlunoDocumentoController {
-  async create(req: Request, res: Response) {
-    const alunoDocumentoData = req.body as AlunoDocumento;
+  async create(
+    req: Request<{ alunoId: string }, any, AlunoDocumentoInterface>,
+    res: Response
+  ) {
+    const alunoDocumentoData = req.body;
     const { alunoId } = req.params;
 
     const associarAoAluno = await AlunoRepository.findOneBy({
