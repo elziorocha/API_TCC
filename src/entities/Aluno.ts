@@ -41,6 +41,13 @@ export class Aluno {
   data_nascimento: Date;
 
   @Column({
+    type: "enum",
+    enum: ["EDUCARD", "VEM"],
+    nullable: true,
+  })
+  tipo_cartao: "EDUCARD" | "VEM";
+
+  @Column({
     type: "timestamp",
     default: () => "CURRENT_TIMESTAMP",
     update: false,

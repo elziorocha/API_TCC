@@ -4,5 +4,4 @@ export interface AlunoDocumentoInterface {
   orgao_emissor: string;
   comprovante_matricula: string;
   atestado_frequencia: string;
-  tipo_cartao: "EDUCARD" | "VEM";
 }

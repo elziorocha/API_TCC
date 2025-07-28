@@ -26,13 +26,6 @@ export class Aluno_Documento {
   @Column({ nullable: false })
   atestado_frequencia: string;
 
-  @Column({
-    type: "enum",
-    enum: ["EDUCARD", "VEM"],
-    nullable: false,
-  })
-  tipo_cartao: "EDUCARD" | "VEM";
-
   @OneToOne(() => Aluno, (aluno) => aluno.aluno_documento)
   aluno: Aluno;
 }

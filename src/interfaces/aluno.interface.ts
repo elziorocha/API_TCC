@@ -4,5 +4,6 @@ export interface AlunoInterface {
   nome: string;
   telefone: string;
   data_nascimento: Date;
+  tipo_cartao: "EDUCARD" | "VEM";
   criado_em: Date;
 }
