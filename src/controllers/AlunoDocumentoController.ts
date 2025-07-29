@@ -1,8 +1,14 @@
 import { Request, Response } from "express";
 import { AlunoRepository } from "../repositories/AlunoRepository";
 import { AlunoDocumentoRepository } from "../repositories/AlunoDocumentoRepository";
-import { NotFoundError, UnprocessableEntityError } from "../helpers/api-errors";
+import {
+  BadRequestError,
+  NotFoundError,
+  UnprocessableEntityError,
+} from "../helpers/api-errors";
 import { AlunoDocumentoInterface } from "../interfaces/alunoDocumento.interface";
+import testaCPF from "../helpers/cpf-helper";
+import validarCPF from "../helpers/cpf-helper";
 
 export class AlunoDocumentoController {
   async create(
@@ -22,6 +28,10 @@ export class AlunoDocumentoController {
       throw new UnprocessableEntityError(
         "Aluno já possui documentos cadastrados."
       );
+    }
+
+    if (!validarCPF(alunoDocumentoData.cpf)) {
+      throw new BadRequestError("CPF inválido.");
     }
 
     const novoAlunoDocumento =
