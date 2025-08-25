@@ -1,42 +1,35 @@
-import { NextFunction, Response, Request } from "express";
-import { UnauthorizedError } from "../helpers/api-errors";
-import { AlunoRepository } from "../repositories/AlunoRepository";
+import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
-interface JWTLogin {
+interface TokenPayload {
   id: number;
+  iat: number;
+  exp: number;
 }
 
-export const authMiddleware = async (
+export function authMiddleware(
   req: Request,
   res: Response,
   next: NextFunction
-) => {
-  const acessoToken = req.headers.authorization?.split(" ")[1];
+) {
+  const { authorization } = req.headers;
 
-  if (!acessoToken) {
-    throw new UnauthorizedError("Não autorizado");
+  if (!authorization) {
+    res.status(401).json({ error: "Token não fornecido" });
+    return;
   }
 
-  const { id } = jwt.verify(
-    acessoToken,
-    process.env.JWT_PASS ?? ""
-  ) as JWTLogin;
+  const token = authorization.split(" ")[1];
 
-  const alunoAuth = await AlunoRepository.findOneBy({
-    id,
-  });
-
-  if (!alunoAuth) {
-    throw new UnauthorizedError("Não autorizado");
+  try {
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_PASS ?? ""
+    ) as TokenPayload;
+    req.alunoLogin = { id: decoded.id };
+    return next();
+  } catch (err) {
+    res.status(401).json({ error: "Token inválido ou expirado" });
+    return;
   }
-
-  const alunoAuthSemDados = {
-    id: alunoAuth.id,
-    email: alunoAuth.email,
-  };
-
-  req.alunoLogin = alunoAuthSemDados;
-
-  next();
-};
+}

@@ -14,29 +14,14 @@ routes.post("/api/aluno/registro", new AuthController().create);
 routes.post("/api/aluno/login", new AuthController().login);
 routes.use(authMiddleware);
 
-routes.post(
-  "/api/aluno/:alunoId/documento",
-  new AlunoDocumentoController().create
-);
-routes.get(
-  "/api/aluno/:alunoId/documento",
-  new AlunoDocumentoController().list
-);
+routes.post("/api/aluno/documento", new AlunoDocumentoController().create);
+routes.get("/api/aluno/documento", new AlunoDocumentoController().list);
 
-routes.post(
-  "/api/aluno/:alunoId/endereco",
-  new AlunoEnderecoController().create
-);
-routes.get("/api/aluno/:alunoId/endereco", new AlunoEnderecoController().list);
+routes.post("/api/aluno/endereco", new AlunoEnderecoController().create);
+routes.get("/api/aluno/endereco", new AlunoEnderecoController().list);
 
-routes.post(
-  "/api/aluno/:alunoId/responsavel",
-  new AlunoResponsavelController().create
-);
-routes.get(
-  "/api/aluno/:alunoId/responsavel",
-  new AlunoResponsavelController().list
-);
+routes.post("/api/aluno/responsavel", new AlunoResponsavelController().create);
+routes.get("/api/aluno/responsavel", new AlunoResponsavelController().list);
 
 routes.get("/dashboard", new AuthController().getAluno);
 

@@ -5,20 +5,20 @@ import { NotFoundError, UnprocessableEntityError } from "../helpers/api-errors";
 import { AlunoDocumentoInterface } from "../interfaces/alunoDocumento.interface";
 
 export class AlunoDocumentoController {
-  async create(
-    req: Request<{ alunoId: string }, any, AlunoDocumentoInterface>,
-    res: Response
-  ) {
+  async create(req: Request<any, any, AlunoDocumentoInterface>, res: Response) {
+    const alunoId = req.alunoLogin.id;
     const alunoDocumentoData = req.body;
-    const { alunoId } = req.params;
 
-    const associarAoAluno = await AlunoRepository.findOneBy({
-      id: Number(alunoId),
+    const aluno = await AlunoRepository.findOne({
+      where: { id: alunoId },
+      relations: ["aluno_documento"],
     });
 
-    if (!associarAoAluno) {
+    if (!aluno) {
       throw new NotFoundError("Aluno não encontrado.");
-    } else if (associarAoAluno.aluno_documento) {
+    }
+
+    if (aluno.aluno_documento) {
       throw new UnprocessableEntityError(
         "Aluno já possui documentos cadastrados."
       );
@@ -28,29 +28,26 @@ export class AlunoDocumentoController {
       AlunoDocumentoRepository.create(alunoDocumentoData);
     await AlunoDocumentoRepository.save(novoAlunoDocumento);
 
-    associarAoAluno.aluno_documento = novoAlunoDocumento;
-    await AlunoRepository.save(associarAoAluno);
+    aluno.aluno_documento = novoAlunoDocumento;
+    await AlunoRepository.save(aluno);
 
     res.status(201).json(novoAlunoDocumento);
-    return;
   }
 
   async list(req: Request, res: Response) {
-    const { alunoId } = req.params;
+    const alunoId = req.alunoLogin.id;
 
-    const buscarAlunoDocumento = await AlunoRepository.findOne({
-      where: {
-        id: Number(alunoId),
-      },
+    const aluno = await AlunoRepository.findOne({
+      where: { id: alunoId },
       relations: ["aluno_documento"],
     });
 
-    if (!buscarAlunoDocumento) {
+    if (!aluno) {
       throw new NotFoundError(
         `Erro ao encontrar documento do aluno ${alunoId}`
       );
     }
 
-    res.status(200).json(buscarAlunoDocumento.aluno_documento);
+    res.status(200).json(aluno.aluno_documento);
   }
 }
