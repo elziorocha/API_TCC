@@ -7,7 +7,6 @@ import {
   UnprocessableEntityError,
 } from "../helpers/api-errors";
 import { AlunoDocumentoInterface } from "../interfaces/alunoDocumento.interface";
-import testaCPF from "../helpers/cpf-helper";
 import validarCPF from "../helpers/cpf-helper";
 
 export class AlunoDocumentoController {
@@ -28,6 +27,14 @@ export class AlunoDocumentoController {
       throw new UnprocessableEntityError(
         "Aluno já possui documentos cadastrados."
       );
+    }
+
+    const documentosExistentes = await AlunoDocumentoRepository.findOne({
+      where: { cpf: alunoDocumentoData.cpf, rg: alunoDocumentoData.rg },
+    });
+
+    if (documentosExistentes) {
+      res.status(400).json({ error: "CPF ou RG já cadastrados no sistema." });
     }
 
     if (!validarCPF(alunoDocumentoData.cpf)) {
