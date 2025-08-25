@@ -29,12 +29,17 @@ export class AlunoDocumentoController {
       );
     }
 
-    const documentosExistentes = await AlunoDocumentoRepository.findOne({
-      where: { cpf: alunoDocumentoData.cpf, rg: alunoDocumentoData.rg },
+    const documentoExistente = await AlunoDocumentoRepository.findOne({
+      where: [{ cpf: alunoDocumentoData.cpf }, { rg: alunoDocumentoData.rg }],
     });
 
-    if (documentosExistentes) {
-      res.status(400).json({ error: "CPF ou RG já cadastrados no sistema." });
+    if (documentoExistente) {
+      if (documentoExistente.cpf === alunoDocumentoData.cpf) {
+        res.status(400).json({ error: "CPF já cadastrado no sistema." });
+      }
+      if (documentoExistente.rg === alunoDocumentoData.rg) {
+        res.status(400).json({ error: "RG já cadastrado no sistema." });
+      }
     }
 
     if (!validarCPF(alunoDocumentoData.cpf)) {
