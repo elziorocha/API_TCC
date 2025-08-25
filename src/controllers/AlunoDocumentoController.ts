@@ -53,7 +53,9 @@ export class AlunoDocumentoController {
     aluno.aluno_documento = novoAlunoDocumento;
     await AlunoRepository.save(aluno);
 
-    res.status(201).json(novoAlunoDocumento);
+    const { id: _, ...novoAlunoDocumentoSemId } = novoAlunoDocumento;
+
+    res.status(201).json(novoAlunoDocumentoSemId);
   }
 
   async list(req: Request, res: Response) {

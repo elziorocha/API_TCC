@@ -34,7 +34,9 @@ export class AlunoResponsavelController {
     aluno.aluno_responsavel = novoAlunoResponsavel;
     await AlunoRepository.save(aluno);
 
-    res.status(201).json(novoAlunoResponsavel);
+    const { id: _, ...novoAlunoResponsavelSemId } = novoAlunoResponsavel;
+
+    res.status(201).json(novoAlunoResponsavelSemId);
   }
 
   async list(req: Request, res: Response) {

@@ -30,7 +30,9 @@ export class AlunoEnderecoController {
     aluno.aluno_endereco = novoAlunoEndereco;
     await AlunoRepository.save(aluno);
 
-    res.status(201).json(novoAlunoEndereco);
+    const { id: _, ...novoAlunoEnderecoSemId } = novoAlunoEndereco;
+
+    res.status(201).json(novoAlunoEnderecoSemId);
   }
 
   async list(req: Request, res: Response) {

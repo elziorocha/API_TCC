@@ -59,7 +59,7 @@ export class AuthController {
       }
     );
 
-    const { senha: _, ...alunoPostDataSemSenha } = novoAluno;
+    const { senha: _, id: __, ...alunoPostDataSemSenha } = novoAluno;
 
     res.status(201).json({
       aluno: alunoPostDataSemSenha,
@@ -98,7 +98,6 @@ export class AuthController {
     );
 
     const alunoAuthSemDados = {
-      id: alunoAuth.id,
       email: alunoAuth.email,
     };
 
