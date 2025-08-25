@@ -8,11 +8,11 @@ import { authMiddleware } from "./middlewares/authMiddleware";
 
 const routes = Router();
 
-// routes.get("/api/aluno/:alunoId", new AlunoController().list);
-
 routes.post("/api/aluno/registro", new AuthController().create);
 routes.post("/api/aluno/login", new AuthController().login);
+
 routes.use(authMiddleware);
+routes.get("/api/aluno/", new AlunoController().list);
 
 routes.post("/api/aluno/documento", new AlunoDocumentoController().create);
 routes.get("/api/aluno/documento", new AlunoDocumentoController().list);

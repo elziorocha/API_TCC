@@ -4,20 +4,22 @@ import { NotFoundError } from "../helpers/api-errors";
 
 export class AlunoController {
   async list(req: Request, res: Response) {
-    const { alunoId } = req.params;
+    const alunoId = req.alunoLogin?.id;
 
-    const buscarAluno = await AlunoRepository.findOne({
-      where: {
-        id: Number(alunoId),
-      },
-    });
-
-    if (!buscarAluno) {
-      throw new NotFoundError("Nenhum aluno encontrado.");
+    if (!alunoId) {
+      throw new NotFoundError("Aluno não autenticado.");
     }
 
-    const { senha: _, ...alunoGetDataSemSenha } = buscarAluno;
+    const aluno = await AlunoRepository.findOne({
+      where: { id: alunoId },
+      relations: ["aluno_documento", "aluno_endereco", "aluno_responsavel"],
+    });
 
-    res.status(200).json(alunoGetDataSemSenha);
+    if (!aluno) {
+      throw new NotFoundError("Aluno não encontrado.");
+    }
+
+    const { id: _, senha: __, ...alunoSemSenha } = aluno;
+    res.status(200).json(alunoSemSenha);
   }
 }
