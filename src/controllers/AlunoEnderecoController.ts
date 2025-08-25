@@ -5,20 +5,20 @@ import { NotFoundError, UnprocessableEntityError } from "../helpers/api-errors";
 import { AlunoEnderecoInterface } from "../interfaces/alunoEndereco.interface";
 
 export class AlunoEnderecoController {
-  async create(
-    req: Request<{ alunoId: string }, any, AlunoEnderecoInterface>,
-    res: Response
-  ) {
+  async create(req: Request<any, any, AlunoEnderecoInterface>, res: Response) {
+    const alunoId = req.alunoLogin.id;
     const alunoEnderecoData = req.body;
-    const { alunoId } = req.params;
 
-    const associarAoAluno = await AlunoRepository.findOneBy({
-      id: Number(alunoId),
+    const aluno = await AlunoRepository.findOne({
+      where: { id: alunoId },
+      relations: ["aluno_endereco"],
     });
 
-    if (!associarAoAluno) {
+    if (!aluno) {
       throw new NotFoundError("Aluno não encontrado.");
-    } else if (associarAoAluno.aluno_endereco) {
+    }
+
+    if (aluno.aluno_endereco) {
       throw new UnprocessableEntityError(
         "Aluno já possui endereços cadastrados."
       );
@@ -27,26 +27,24 @@ export class AlunoEnderecoController {
     const novoAlunoEndereco = AlunoEnderecoRepository.create(alunoEnderecoData);
     await AlunoEnderecoRepository.save(novoAlunoEndereco);
 
-    associarAoAluno.aluno_endereco = novoAlunoEndereco;
-    await AlunoRepository.save(associarAoAluno);
+    aluno.aluno_endereco = novoAlunoEndereco;
+    await AlunoRepository.save(aluno);
 
     res.status(201).json(novoAlunoEndereco);
   }
 
   async list(req: Request, res: Response) {
-    const { alunoId } = req.params;
+    const alunoId = req.alunoLogin.id;
 
-    const buscarAlunoEndereco = await AlunoRepository.findOne({
-      where: {
-        id: Number(alunoId),
-      },
+    const aluno = await AlunoRepository.findOne({
+      where: { id: alunoId },
       relations: ["aluno_endereco"],
     });
 
-    if (!buscarAlunoEndereco) {
+    if (!aluno) {
       throw new NotFoundError(`Erro ao encontrar endereço do aluno ${alunoId}`);
     }
 
-    res.status(200).json(buscarAlunoEndereco.aluno_endereco);
+    res.status(200).json(aluno.aluno_endereco);
   }
 }
