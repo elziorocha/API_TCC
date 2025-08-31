@@ -1,11 +1,6 @@
 import { Request, Response, NextFunction } from "express";
+import { TokenPayloadInterface } from "../helpers/interfaces.interface";
 import jwt from "jsonwebtoken";
-
-interface TokenPayload {
-  id: number;
-  iat: number;
-  exp: number;
-}
 
 export function authMiddleware(
   req: Request,
@@ -25,7 +20,7 @@ export function authMiddleware(
     const decoded = jwt.verify(
       token,
       process.env.JWT_PASS ?? ""
-    ) as TokenPayload;
+    ) as TokenPayloadInterface;
     req.alunoLogin = { id: decoded.id };
     return next();
   } catch (err) {

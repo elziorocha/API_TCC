@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
-import { AlunoEnderecoRepository } from "../repositories/AlunoEnderecoRepository";
-import { AlunoRepository } from "../repositories/AlunoRepository";
+import { AlunoEnderecoRepository, AlunoRepository } from "../repositories";
 import { NotFoundError, UnprocessableEntityError } from "../helpers/api-errors";
-import { AlunoEnderecoInterface } from "../interfaces/alunoEndereco.interface";
+import { AlunoEnderecoInterface } from "../helpers/interfaces.interface";
 
 export class AlunoEnderecoController {
   async create(req: Request<any, any, AlunoEnderecoInterface>, res: Response) {

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { AlunoRepository } from "../repositories/AlunoRepository";
 import { NotFoundError } from "../helpers/api-errors";
+import { AlunoRepository } from "../repositories";
 
 export class AlunoController {
   async list(req: Request, res: Response) {

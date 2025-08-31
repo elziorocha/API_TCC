@@ -1,12 +1,14 @@
 import { Request, Response } from "express";
-import { AlunoRepository } from "../repositories/AlunoRepository";
 import { BadRequestError } from "../helpers/api-errors";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { validate } from "class-validator";
 import { Aluno as AlunoEntity } from "../entities/Aluno";
-import { AlunoInterface } from "../interfaces/aluno.interface";
-import { AlunoLoginInterface } from "../interfaces/alunoLogin.interface";
+import {
+  AlunoInterface,
+  AlunoLoginInterface,
+} from "../helpers/interfaces.interface";
+import { AlunoRepository } from "../repositories";
 
 export class AuthController {
   async create(

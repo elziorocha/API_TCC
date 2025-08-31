@@ -1,12 +1,11 @@
 import { Request, Response } from "express";
-import { AlunoRepository } from "../repositories/AlunoRepository";
-import { AlunoDocumentoRepository } from "../repositories/AlunoDocumentoRepository";
+import { AlunoDocumentoRepository, AlunoRepository } from "../repositories";
 import {
   BadRequestError,
   NotFoundError,
   UnprocessableEntityError,
 } from "../helpers/api-errors";
-import { AlunoDocumentoInterface } from "../interfaces/alunoDocumento.interface";
+import { AlunoDocumentoInterface } from "../helpers/interfaces.interface";
 import validarCPF from "../helpers/cpf-helper";
 
 export class AlunoDocumentoController {

@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
-import { AlunoRepository } from "../repositories/AlunoRepository";
-import { AlunoResponsavelRepository } from "../repositories/AlunoResponsavelRepository";
+import { AlunoRepository, AlunoResponsavelRepository } from "../repositories";
 import { NotFoundError, UnprocessableEntityError } from "../helpers/api-errors";
-import { AlunoResponsavelInterface } from "../interfaces/alunoResponsavel.interface";
+import { AlunoResponsavelInterface } from "../helpers/interfaces.interface";
 
 export class AlunoResponsavelController {
   async create(
