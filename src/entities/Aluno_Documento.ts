@@ -26,6 +26,9 @@ export class Aluno_Documento {
   @Column({ nullable: false })
   atestado_frequencia: string;
 
+  @Column({ type: "boolean", default: false })
+  liberado: boolean;
+
   @OneToOne(() => Aluno, (aluno) => aluno.aluno_documento)
   aluno: Aluno;
 }

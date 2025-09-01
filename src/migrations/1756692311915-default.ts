@@ -1,10 +1,10 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class Default1756070478578 implements MigrationInterface {
-    name = 'Default1756070478578'
+export class Default1756692311915 implements MigrationInterface {
+    name = 'Default1756692311915'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`CREATE TABLE "aluno_documentos" ("id" SERIAL NOT NULL, "rg" character varying NOT NULL, "cpf" character varying NOT NULL, "orgao_emissor" character varying NOT NULL, "comprovante_matricula" character varying NOT NULL, "atestado_frequencia" character varying NOT NULL, CONSTRAINT "UQ_27836b80eb032905f279a75e4e4" UNIQUE ("rg"), CONSTRAINT "UQ_85b0ac0d5b6a1cd0a48591cc597" UNIQUE ("cpf"), CONSTRAINT "PK_be051b688189c869c3d79a3708d" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "aluno_documentos" ("id" SERIAL NOT NULL, "rg" character varying NOT NULL, "cpf" character varying NOT NULL, "orgao_emissor" character varying NOT NULL, "comprovante_matricula" character varying NOT NULL, "atestado_frequencia" character varying NOT NULL, "liberado" boolean NOT NULL DEFAULT false, CONSTRAINT "UQ_27836b80eb032905f279a75e4e4" UNIQUE ("rg"), CONSTRAINT "UQ_85b0ac0d5b6a1cd0a48591cc597" UNIQUE ("cpf"), CONSTRAINT "PK_be051b688189c869c3d79a3708d" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "aluno_enderecos" ("id" SERIAL NOT NULL, "cep" character varying NOT NULL, "cidade" character varying NOT NULL, "bairro" character varying NOT NULL, "rua" character varying NOT NULL, "numero" integer NOT NULL, CONSTRAINT "PK_dfe60aed2caea1d39c4a766fafe" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TYPE "public"."alunos_tipo_cartao_enum" AS ENUM('EDUCARD', 'VEM')`);
         await queryRunner.query(`CREATE TABLE "alunos" ("id" SERIAL NOT NULL, "email" character varying NOT NULL, "senha" character varying NOT NULL, "nome" text NOT NULL, "telefone" character varying(11) NOT NULL, "data_nascimento" date NOT NULL, "tipo_cartao" "public"."alunos_tipo_cartao_enum", "criado_em" TIMESTAMP NOT NULL DEFAULT now(), "aluno_documento_id" integer, "aluno_endereco_id" integer, "aluno_responsavel_id" integer, CONSTRAINT "UQ_1f9a8f3f4e5a314a2d7f828a605" UNIQUE ("email"), CONSTRAINT "UQ_157d58fe6dda6fe78fcda194f1f" UNIQUE ("telefone"), CONSTRAINT "REL_7de9d01dc0215c578c0cd89c0d" UNIQUE ("aluno_documento_id"), CONSTRAINT "REL_067d2ce5fbb92c0e1198e00cb4" UNIQUE ("aluno_endereco_id"), CONSTRAINT "REL_94c7b5ba1893fd634f91ee5f7a" UNIQUE ("aluno_responsavel_id"), CONSTRAINT "PK_0090f2d8573e71e8e4e274db905" PRIMARY KEY ("id"))`);

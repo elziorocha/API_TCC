@@ -26,6 +26,7 @@ export interface AlunoDocumentoInterface {
   orgao_emissor: string;
   comprovante_matricula: string;
   atestado_frequencia: string;
+  liberado: boolean;
 }
 
 export interface AlunoEnderecoInterface {
