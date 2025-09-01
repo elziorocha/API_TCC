@@ -12,7 +12,7 @@ routes.post("/api/aluno/registro", new AuthController().create);
 routes.post("/api/aluno/login", new AuthController().login);
 
 routes.use(authMiddleware);
-routes.get("/api/aluno/", new AlunoController().list);
+routes.get("/api/aluno", new AlunoController().list);
 
 routes.post("/api/aluno/documento", new AlunoDocumentoController().create);
 routes.get("/api/aluno/documento", new AlunoDocumentoController().list);
@@ -22,7 +22,5 @@ routes.get("/api/aluno/endereco", new AlunoEnderecoController().list);
 
 routes.post("/api/aluno/responsavel", new AlunoResponsavelController().create);
 routes.get("/api/aluno/responsavel", new AlunoResponsavelController().list);
-
-routes.get("/dashboard", new AuthController().getAluno);
 
 export default routes;
