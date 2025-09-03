@@ -57,5 +57,5 @@ export interface AlunoMatriculaInterface {
   turno: Turno;
   convenio: Convenio;
   cgm: string;
-  distancia_instituicao: string;
+  distancia_instituicao: number;
 }

@@ -2,6 +2,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
@@ -80,11 +81,9 @@ export class Aluno {
   @JoinColumn({ name: "aluno_responsavel_id" })
   aluno_responsavel?: Aluno_Responsavel;
 
-  @OneToOne(() => Aluno_Matricula, {
-    nullable: true,
+  @OneToMany(() => Aluno_Matricula, (matricula) => matricula.aluno, {
     cascade: true,
     eager: true,
   })
-  @JoinColumn({ name: "aluno_matricula_id" })
-  aluno_matricula?: Aluno_Matricula;
+  aluno_matricula?: Aluno_Matricula[];
 }

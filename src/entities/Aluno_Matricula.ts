@@ -1,4 +1,4 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Aluno } from "./Aluno";
 import { IsDate, Length, Matches, Max, Min } from "class-validator";
 import { Convenio, GrauEscolaridade, Turno } from "../helpers/entities-enum";
@@ -67,6 +67,6 @@ export class Aluno_Matricula {
   @Column({ nullable: true })
   distancia_instituicao: number;
 
-  @OneToOne(() => Aluno, (aluno) => aluno.aluno_matricula)
+  @ManyToOne(() => Aluno, (aluno) => aluno.aluno_matricula)
   aluno: Aluno;
 }
