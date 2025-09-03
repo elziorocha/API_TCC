@@ -1,7 +1,7 @@
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Aluno } from "./Aluno";
 import { IsDate, Length, Matches, Max, Min } from "class-validator";
-import { GrauEscolaridade } from "../helpers/grauEscolaridade";
+import { Convenio, GrauEscolaridade, Turno } from "../helpers/entities-enum";
 
 @Entity("aluno_matriculas")
 export class Aluno_Matricula {
@@ -11,7 +11,7 @@ export class Aluno_Matricula {
   @Column({ nullable: false })
   @Length(4, 4, { message: "O Ano letivo deve conter exatamente 4 dígitos." })
   @Matches(/^\d{4}$/, { message: "O Ano letivo deve conter apenas números." })
-  ano_letivo: string;
+  ano_letivo: number;
 
   @Length(8, 155, { message: "A instituição deve conter entre 8 e 155 dígitos." })
   @Column({ nullable: false })
@@ -30,7 +30,7 @@ export class Aluno_Matricula {
     enum: GrauEscolaridade,
     nullable: false,
   })
-  tipo_cartao: GrauEscolaridade;
+  grau_scolaridade: GrauEscolaridade;
 
   @Column({
     type: "char",
@@ -39,7 +39,7 @@ export class Aluno_Matricula {
   })
   @Min(0, { message: "A série ou o período deve ser um dígito entre 0 e 9" })
   @Max(9, { message: "A série ou o período deve ser um dígito entre 0 e 9" })
-  serieOuPeriodo: number;
+  serie_ou_periodo: number;
 
   @Length(4, 155, { message: "A instituição deve conter entre 4 e 155 dígitos." })
   @Column({ nullable: true })
@@ -47,17 +47,17 @@ export class Aluno_Matricula {
 
   @Column({
     type: "enum",
-    enum: ["Matutino", "Vespertino", "Noturno"],
+    enum: Turno,
     nullable: false,
   })
-  turno: "Matutino" | "Vespertino" | "Noturno";
+  turno: Turno;
 
   @Column({
     type: "enum",
-    enum: ["PROUNI", "FIES", "EDUCAMAIS", "BOLSA"],
+    enum: Convenio,
     nullable: true,
   })
-  convenio: "PROUNI" | "FIES" | "EDUCAMAIS" | "BOLSA";
+  convenio: Convenio;
 
   @Length(4, 20, { message: "O CGM deve conter entre 4 e 20 dígitos." })
   @Column({ nullable: true })
@@ -65,7 +65,7 @@ export class Aluno_Matricula {
 
   @Length(1, 4, { message: "A distância deve conter entre 1 e 4 dígitos." })
   @Column({ nullable: true })
-  distanciaInstituicao: number;
+  distancia_instituicao: number;
 
   @OneToOne(() => Aluno, (aluno) => aluno.aluno_matricula)
   aluno: Aluno;

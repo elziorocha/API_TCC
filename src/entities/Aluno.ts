@@ -10,6 +10,7 @@ import { Aluno_Endereco } from "./Aluno_Endereco";
 import { Aluno_Responsavel } from "./Aluno_Responsavel";
 import { IsDate, IsEmail, Length, Matches, MinLength } from "class-validator";
 import { Aluno_Matricula } from "./Aluno_Matricula";
+import { TipoCartao } from "../helpers/entities-enum";
 
 @Entity("alunos")
 export class Aluno {
@@ -43,10 +44,10 @@ export class Aluno {
 
   @Column({
     type: "enum",
-    enum: ["EDUCARD", "VEM"],
+    enum: TipoCartao,
     nullable: true,
   })
-  tipo_cartao: "EDUCARD" | "VEM";
+  tipo_cartao: TipoCartao;
 
   @Column({
     type: "timestamp",

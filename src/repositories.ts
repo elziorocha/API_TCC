@@ -3,6 +3,7 @@ import { Aluno } from "./entities/Aluno";
 import { Aluno_Documento } from "./entities/Aluno_Documento";
 import { Aluno_Responsavel } from "./entities/Aluno_Responsavel";
 import { Aluno_Endereco } from "./entities/Aluno_Endereco";
+import { Aluno_Matricula } from "./entities/Aluno_Matricula";
 
 export const AlunoRepository = AppDataSource.getRepository(Aluno);
 
@@ -14,3 +15,6 @@ export const AlunoResponsavelRepository =
 
 export const AlunoEnderecoRepository =
   AppDataSource.getRepository(Aluno_Endereco);
+
+export const AlunoMatriculaRepository =
+  AppDataSource.getRepository(Aluno_Matricula);

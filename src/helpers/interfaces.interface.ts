@@ -1,3 +1,5 @@
+import { Convenio, GrauEscolaridade, TipoCartao, Turno } from "./entities-enum";
+
 export interface TokenPayloadInterface {
   id: number;
   iat: number;
@@ -16,7 +18,7 @@ export interface AlunoInterface {
   nome: string;
   telefone: string;
   data_nascimento: Date;
-  tipo_cartao: "EDUCARD" | "VEM";
+  tipo_cartao: TipoCartao;
   criado_em: Date;
 }
 
@@ -42,4 +44,18 @@ export interface AlunoResponsavelInterface {
   nome_mae: string;
   nome_pai: string;
   nome_responsavel: string;
+}
+
+export interface AlunoMatriculaInterface {
+  ano_letivo: number;
+  instituicao: string;
+  data_inicio: Date;
+  data_fim: Date;
+  grau_scolaridade: GrauEscolaridade;
+  serie_ou_periodo: number;
+  curso: string;
+  turno: Turno;
+  convenio: Convenio;
+  cgm: string;
+  distancia_instituicao: string;
 }
