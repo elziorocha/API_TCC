@@ -20,7 +20,8 @@
     "strictPropertyInitialization": false,
     "typeRoots": [
       "./src/@types"
-    ]
+    ],
+    "ignoreDeprecations": "6.0"
   },
   "include": [
     "src/**/*"

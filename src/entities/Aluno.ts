@@ -9,6 +9,7 @@ import { Aluno_Documento } from "./Aluno_Documento";
 import { Aluno_Endereco } from "./Aluno_Endereco";
 import { Aluno_Responsavel } from "./Aluno_Responsavel";
 import { IsDate, IsEmail, Length, Matches, MinLength } from "class-validator";
+import { Aluno_Matricula } from "./Aluno_Matricula";
 
 @Entity("alunos")
 export class Aluno {
@@ -77,4 +78,12 @@ export class Aluno {
   })
   @JoinColumn({ name: "aluno_responsavel_id" })
   aluno_responsavel?: Aluno_Responsavel;
+
+  @OneToOne(() => Aluno_Matricula, {
+    nullable: true,
+    cascade: true,
+    eager: true,
+  })
+  @JoinColumn({ name: "aluno_matricula_id" })
+  aluno_matricula?: Aluno_Matricula;
 }
