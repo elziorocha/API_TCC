@@ -65,6 +65,9 @@ export class Aluno_Matricula {
   @Max(1000, { message: "Distância máxima: 1000" })
   distancia_instituicao?: number;
 
+  @Column({ type: "boolean", default: true })
+  status_matricula: boolean;
+
   @ManyToOne(() => Aluno, (aluno) => aluno.aluno_matricula, { nullable: false })
   aluno: Aluno;
 }

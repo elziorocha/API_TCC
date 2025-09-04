@@ -63,4 +63,5 @@ export interface AlunoMatriculaInterface {
   convenio: Convenio;
   cgm: string;
   distancia_instituicao: number;
+  status_matricula: boolean;
 }
