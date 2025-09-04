@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import { validate } from "class-validator";
 import { Aluno as AlunoEntity } from "../entities/Aluno";
 import {
+  AlterarSenhaInterface,
   AlunoInterface,
   AlunoLoginInterface,
 } from "../helpers/interfaces.interface";
@@ -112,7 +113,7 @@ export class AuthController {
   }
 
   async alterarSenha(
-    req: Request<{ id: number }, any, { senhaAntiga: string; novaSenha: string }>,
+    req: Request<any, any, AlterarSenhaInterface>,
     res: Response
   ){
     const { senhaAntiga, novaSenha } = req.body;

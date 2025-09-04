@@ -6,6 +6,11 @@ export interface TokenPayloadInterface {
   exp: number;
 }
 
+export interface AlterarSenhaInterface{
+  senhaAntiga: string;
+  novaSenha: string;
+}
+
 export interface AlunoLoginInterface {
   email: string;
   senha: string;
