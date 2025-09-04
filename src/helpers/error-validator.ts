@@ -1,6 +1,7 @@
 
 import { ValidationError } from "class-validator";
 import { Response } from "express";
+import { BadRequestError } from "./api-errors";
 
 export function ErrosValidacao(erros: ValidationError[], res: Response) {
   const mensagens: string[] = [];
@@ -14,7 +15,8 @@ export function ErrosValidacao(erros: ValidationError[], res: Response) {
     }
   });
 
-  res.status(400).json({ errors: mensagens });
+  const mensagemdeErroEmString = mensagens.join(', ');
+  throw new BadRequestError(mensagemdeErroEmString);
 }
 
 function ErrosValidacaoRecursivo(erros: ValidationError[]): string[] {

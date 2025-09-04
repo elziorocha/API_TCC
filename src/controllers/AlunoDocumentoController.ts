@@ -36,10 +36,10 @@ export class AlunoDocumentoController {
 
     if (documentoExistente) {
       if (documentoExistente.cpf === alunoDocumentoData.cpf) {
-        res.status(400).json({ error: "CPF já cadastrado no sistema." });
+        throw new BadRequestError("CPF já cadastrado no sistema.");
       }
       if (documentoExistente.rg === alunoDocumentoData.rg) {
-        res.status(400).json({ error: "RG já cadastrado no sistema." });
+         throw new BadRequestError("RG já cadastrado no sistema.");
       }
     }
 

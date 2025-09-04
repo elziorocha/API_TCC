@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { TokenPayloadInterface } from "../helpers/interfaces.interface";
 import jwt from "jsonwebtoken";
+import { UnauthorizedError } from "../helpers/api-errors";
 
 export function authMiddleware(
   req: Request,
@@ -10,8 +11,7 @@ export function authMiddleware(
   const { authorization } = req.headers;
 
   if (!authorization) {
-    res.status(401).json({ error: "Token não fornecido" });
-    return;
+    throw new UnauthorizedError("Token não fornecido");
   }
 
   const token = authorization.split(" ")[1];
@@ -24,7 +24,6 @@ export function authMiddleware(
     req.alunoLogin = { id: decoded.id };
     return next();
   } catch (err) {
-    res.status(401).json({ error: "Token inválido ou expirado" });
-    return;
+    throw new UnauthorizedError("Token inválido ou expirado");
   }
 }
