@@ -57,6 +57,9 @@ export class Aluno {
   })
   criado_em: Date;
 
+  @Column({ default: 0 })
+  tokenVersion: number;
+
   @OneToOne(() => Aluno_Documento, {
     nullable: true,
     cascade: true,

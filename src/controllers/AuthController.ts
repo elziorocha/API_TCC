@@ -53,7 +53,7 @@ export class AuthController {
     await AlunoRepository.save(novoAluno);
 
     const authToken = jwt.sign(
-      { id: novoAluno.id },
+      { id: novoAluno.id, tokenVersion: novoAluno.tokenVersion },
       process.env.JWT_PASS ?? "",
       {
         expiresIn: "6h",
@@ -90,8 +90,11 @@ export class AuthController {
       throw new BadRequestError("E-mail ou Senha inválidos.");
     }
 
+    alunoAuth.tokenVersion += 1;
+    await AlunoRepository.save(alunoAuth);
+
     const authToken = jwt.sign(
-      { id: alunoAuth.id },
+      { id: alunoAuth.id, tokenVersion: alunoAuth.tokenVersion },
       process.env.JWT_PASS ?? "",
       {
         expiresIn: "6h",
@@ -141,8 +144,24 @@ export class AuthController {
     const senhaCriptografada = await bcrypt.hash(novaSenha, 10);
     aluno.senha = senhaCriptografada;
 
+    aluno.tokenVersion += 1;
     await AlunoRepository.save(aluno);
 
     res.status(200).json({ message: "Senha alterada com sucesso!" });
   }
+
+  async logout(req: Request, res: Response) {
+    const alunoId = req.alunoLogin.id;
+
+    const aluno = await AlunoRepository.findOneBy({ id: alunoId });
+    if (!aluno) {
+      throw new BadRequestError("Aluno não encontrado.");
+    }
+
+    aluno.tokenVersion += 1;
+    await AlunoRepository.save(aluno);
+
+    res.status(200).json({ message: "Logout realizado com sucesso!" });
+  }
+
 }

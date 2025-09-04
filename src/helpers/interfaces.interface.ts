@@ -4,6 +4,7 @@ export interface TokenPayloadInterface {
   id: number;
   iat: number;
   exp: number;
+  tokenVersion: number;
 }
 
 export interface AlterarSenhaInterface{

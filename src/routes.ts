@@ -28,4 +28,6 @@ routes.get("/api/aluno/responsavel", new AlunoResponsavelController().list);
 routes.post("/api/aluno/matricula", new AlunoMatriculaController().create);
 routes.get("/api/aluno/matricula", new AlunoMatriculaController().list);
 
+routes.post("/api/aluno/logout", new AuthController().logout);
+
 export default routes;

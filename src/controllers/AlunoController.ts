@@ -12,7 +12,7 @@ export class AlunoController {
 
     const aluno = await AlunoRepository.findOne({
       where: { id: alunoId },
-      relations: ["aluno_documento", "aluno_endereco", "aluno_responsavel"],
+      relations: ["aluno_documento", "aluno_endereco", "aluno_responsavel", "aluno_matricula"],
     });
 
     if (!aluno) {
