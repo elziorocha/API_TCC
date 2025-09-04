@@ -1,6 +1,7 @@
-import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Aluno } from "./Aluno";
-import { IsDate, Length, Matches, Max, Min } from "class-validator";
+import { IsDate, IsEnum, IsInt, IsOptional, Length, Max, Min } from "class-validator";
+import { Type } from "class-transformer";
 import { Convenio, GrauEscolaridade, Turno } from "../helpers/entities-enum";
 
 @Entity("aluno_matriculas")
@@ -8,65 +9,62 @@ export class Aluno_Matricula {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ nullable: false })
-  @Length(4, 4, { message: "O Ano letivo deve conter exatamente 4 dígitos." })
-  @Matches(/^\d{4}$/, { message: "O Ano letivo deve conter apenas números." })
+  @Column({ type: "int", nullable: false })
+  @IsInt({ message: "Ano letivo deve ser um número inteiro." })
+  @Min(1950, { message: "Ano letivo inválido." })
+  @Max(2150, { message: "Ano letivo inválido." })
   ano_letivo: number;
 
-  @Length(8, 155, { message: "A instituição deve conter entre 8 e 155 dígitos." })
   @Column({ nullable: false })
+  @Length(8, 155, { message: "A instituição deve conter entre 8 e 155 caracteres." })
   instituicao: string;
 
   @Column({ type: "date", nullable: false })
-  @IsDate({ message: "Data de início deve ser uma data válida." })
+  @Type(() => Date)
+  @IsDate({ message: "Data de início inválida." })
   data_inicio: Date;
 
   @Column({ type: "date", nullable: false })
-  @IsDate({ message: "Data de término deve ser uma data válida." })
+  @Type(() => Date)
+  @IsDate({ message: "Data de término inválida." })
   data_fim: Date;
 
-  @Column({
-    type: "enum",
-    enum: GrauEscolaridade,
-    nullable: false,
-  })
+  @Column({ type: "enum", enum: GrauEscolaridade, nullable: false })
+  @IsEnum(GrauEscolaridade, { message: "Grau de escolaridade inválido." })
   grau_scolaridade: GrauEscolaridade;
 
-  @Column({
-    type: "char",
-    length: 1,
-    nullable: false,
-  })
-  @Min(0, { message: "A série ou o período deve ser um dígito entre 0 e 9" })
-  @Max(9, { message: "A série ou o período deve ser um dígito entre 0 e 9" })
+  @Column({ type: "int", nullable: false, default: 0, })
+  @IsInt({ message: "Série ou período deve ser um número." })
+  @Min(0, { message: "A série ou o período deve ser entre 0 e 9." })
+  @Max(9, { message: "A série ou o período deve ser entre 0 e 9." })
   serie_ou_periodo: number;
 
-  @Length(4, 155, { message: "A instituição deve conter entre 4 e 155 dígitos." })
   @Column({ nullable: true })
-  curso: string;
+  @IsOptional()
+  @Length(4, 155, { message: "O curso deve conter entre 4 e 155 caracteres." })
+  curso?: string;
 
-  @Column({
-    type: "enum",
-    enum: Turno,
-    nullable: false,
-  })
+  @Column({ type: "enum", enum: Turno, nullable: false })
+  @IsEnum(Turno, { message: "Turno fornecido inválido." })
   turno: Turno;
 
-  @Column({
-    type: "enum",
-    enum: Convenio,
-    nullable: true,
-  })
-  convenio: Convenio;
+  @Column({ type: "enum", enum: Convenio, nullable: true })
+  @IsOptional()
+  @IsEnum(Convenio, { message: "Convênio fornecido inválido." })
+  convenio?: Convenio;
 
-  @Length(4, 20, { message: "O CGM deve conter entre 4 e 20 dígitos." })
   @Column({ nullable: true })
-  cgm: string;
+  @IsOptional()
+  @Length(4, 20, { message: "O CGM deve conter entre 4 e 20 caracteres." })
+  cgm?: string;
 
-  @Length(1, 4, { message: "A distância deve conter entre 1 e 4 dígitos." })
-  @Column({ nullable: true })
-  distancia_instituicao: number;
+  @Column({ type: "int", nullable: true })
+  @IsOptional()
+  @IsInt({ message: "A distância deve ser um número." })
+  @Min(1, { message: "Distância mínima: 1" })
+  @Max(1000, { message: "Distância máxima: 1000" })
+  distancia_instituicao?: number;
 
-  @ManyToOne(() => Aluno, (aluno) => aluno.aluno_matricula)
+  @ManyToOne(() => Aluno, (aluno) => aluno.aluno_matricula, { nullable: false })
   aluno: Aluno;
 }

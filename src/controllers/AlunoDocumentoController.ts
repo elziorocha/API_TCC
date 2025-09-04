@@ -7,6 +7,8 @@ import {
 } from "../helpers/api-errors";
 import { AlunoDocumentoInterface } from "../helpers/interfaces.interface";
 import validarCPF from "../helpers/cpf-helper";
+import { validate } from "class-validator";
+import { ErrosValidacao } from "../helpers/error-validator";
 
 export class AlunoDocumentoController {
   async create(req: Request<any, any, AlunoDocumentoInterface>, res: Response) {
@@ -50,6 +52,14 @@ export class AlunoDocumentoController {
     await AlunoDocumentoRepository.save(novoAlunoDocumento);
 
     aluno.aluno_documento = novoAlunoDocumento;
+
+    const errosValidacao = await validate(novoAlunoDocumento);
+    
+    if (errosValidacao.length > 0) {
+      ErrosValidacao(errosValidacao, res);
+      return;
+    }
+
     await AlunoRepository.save(aluno);
 
     const { id: _, ...novoAlunoDocumentoSemId } = novoAlunoDocumento;

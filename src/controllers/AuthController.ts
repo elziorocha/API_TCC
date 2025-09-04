@@ -9,6 +9,8 @@ import {
   AlunoLoginInterface,
 } from "../helpers/interfaces.interface";
 import { AlunoRepository } from "../repositories";
+import { plainToInstance } from "class-transformer";
+import { ErrosValidacao } from "../helpers/error-validator";
 
 export class AuthController {
   async create(
@@ -17,19 +19,15 @@ export class AuthController {
   ) {
     const alunoData = req.body;
 
-    const validacaoAluno = new AlunoEntity();
-    validacaoAluno.email = alunoData.email;
-    validacaoAluno.senha = alunoData.senha;
-    validacaoAluno.nome = alunoData.nome;
-    validacaoAluno.telefone = alunoData.telefone;
-    validacaoAluno.data_nascimento = new Date(alunoData.data_nascimento);
+    const alunoInstancia = plainToInstance(AlunoEntity, {
+      ...alunoData,
+      data_nascimento: new Date(alunoData.data_nascimento)
+    });
 
-    const erroValidacao = await validate(validacaoAluno);
-    if (erroValidacao.length > 0) {
-      const mensagensErro = erroValidacao
-        .map((err) => Object.values(err.constraints ?? {}))
-        .flat();
-      res.status(400).json({ errors: mensagensErro });
+    const errosValidacao = await validate(alunoInstancia, { stopAtFirstError: false });
+
+    if (errosValidacao.length > 0) {
+      ErrosValidacao(errosValidacao, res);
       return;
     }
 

@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { AlunoRepository, AlunoResponsavelRepository } from "../repositories";
 import { NotFoundError, UnprocessableEntityError } from "../helpers/api-errors";
 import { AlunoResponsavelInterface } from "../helpers/interfaces.interface";
+import { validate } from "class-validator";
+import { ErrosValidacao } from "../helpers/error-validator";
 
 export class AlunoResponsavelController {
   async create(
@@ -31,6 +33,14 @@ export class AlunoResponsavelController {
     await AlunoResponsavelRepository.save(novoAlunoResponsavel);
 
     aluno.aluno_responsavel = novoAlunoResponsavel;
+
+    const errosValidacao = await validate(novoAlunoResponsavel);
+    
+    if (errosValidacao.length > 0) {
+      ErrosValidacao(errosValidacao, res);
+      return;
+    }
+
     await AlunoRepository.save(aluno);
 
     const { id: _, ...novoAlunoResponsavelSemId } = novoAlunoResponsavel;

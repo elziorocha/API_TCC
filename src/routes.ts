@@ -5,6 +5,7 @@ import { AlunoEnderecoController } from "./controllers/AlunoEnderecoController";
 import { AlunoResponsavelController } from "./controllers/AlunoResponsavelController";
 import { AuthController } from "./controllers/AuthController";
 import { authMiddleware } from "./middlewares/authMiddleware";
+import { AlunoMatriculaController } from "./controllers/AlunoMatriculaController";
 
 const routes = Router();
 
@@ -22,5 +23,8 @@ routes.get("/api/aluno/endereco", new AlunoEnderecoController().list);
 
 routes.post("/api/aluno/responsavel", new AlunoResponsavelController().create);
 routes.get("/api/aluno/responsavel", new AlunoResponsavelController().list);
+
+routes.post("/api/aluno/matricula", new AlunoMatriculaController().create);
+routes.get("/api/aluno/matricula", new AlunoMatriculaController().list);
 
 export default routes;
