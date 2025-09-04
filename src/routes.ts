@@ -14,6 +14,7 @@ routes.post("/api/aluno/login", new AuthController().login);
 
 routes.use(authMiddleware);
 routes.get("/api/aluno", new AlunoController().list);
+routes.put("/api/aluno/alterar-senha", new AuthController().alterarSenha);
 
 routes.post("/api/aluno/documento", new AlunoDocumentoController().create);
 routes.get("/api/aluno/documento", new AlunoDocumentoController().list);

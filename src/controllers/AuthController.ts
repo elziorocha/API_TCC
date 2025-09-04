@@ -110,4 +110,38 @@ export class AuthController {
   async getAluno(req: Request, res: Response) {
     res.json(req.alunoLogin);
   }
+
+  async alterarSenha(
+    req: Request<{ id: number }, any, { senhaAntiga: string; novaSenha: string }>,
+    res: Response
+  ){
+    const { senhaAntiga, novaSenha } = req.body;
+    const alunoId = req.params.id;
+
+    const aluno = await AlunoRepository.findOneBy({ id: alunoId });
+
+    if (!aluno) {
+      throw new BadRequestError("Aluno não encontrado.");
+    }
+
+    const senhaCorreta = await bcrypt.compare(senhaAntiga, aluno.senha);
+    
+    switch (true) {
+      case !senhaCorreta:
+        throw new BadRequestError("Senha antiga incorreta.");
+
+      case !novaSenha || novaSenha.length < 6:
+        throw new BadRequestError("A senha deve ter pelo menos 6 caracteres.");
+
+      case senhaAntiga === novaSenha:
+        throw new BadRequestError("As senhas não podem ser iguais.");
+    }
+
+    const senhaCriptografada = await bcrypt.hash(novaSenha, 10);
+    aluno.senha = senhaCriptografada;
+
+    await AlunoRepository.save(aluno);
+
+    res.status(200).json({ message: "Senha alterada com sucesso!" });
+  }
 }
