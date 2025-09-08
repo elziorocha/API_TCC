@@ -39,6 +39,11 @@ export class AlunoMatriculaController {
       aluno,
     });
 
+    const anoAtual = new Date().getFullYear();
+
+    novoAlunoMatricula.status_matricula =
+      novoAlunoMatricula.ano_letivo === anoAtual;
+
     const errosValidacao = await validate(novoAlunoMatricula);
 
     if (errosValidacao.length > 0) {
@@ -62,10 +67,11 @@ export class AlunoMatriculaController {
     });
 
     if (!aluno) {
-      throw new NotFoundError(`Erro ao encontrar matrícula do aluno ${alunoId}`);
+      throw new NotFoundError(
+        `Erro ao encontrar matrícula do aluno ${alunoId}`
+      );
     }
 
     res.status(200).json(aluno.aluno_matricula);
   }
 }
-

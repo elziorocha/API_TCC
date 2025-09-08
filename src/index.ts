@@ -4,6 +4,7 @@ import express from "express";
 import { AppDataSource } from "./data-source";
 import routes from "./routes";
 import { errorMiddleware } from "./middlewares/errorMiddleware";
+import { cronVerificarAnoLetivo } from "./helpers/cron/alunoMatriculaCron";
 
 AppDataSource.initialize().then(() => {
   const app = express();
@@ -18,6 +19,8 @@ AppDataSource.initialize().then(() => {
   app.use(routes);
 
   app.use(errorMiddleware);
+
+  cronVerificarAnoLetivo();
 
   return app.listen(process.env.PORT);
 });
