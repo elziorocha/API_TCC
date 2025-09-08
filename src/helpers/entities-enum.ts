@@ -17,11 +17,12 @@ export enum Turno {
   MATUTINO = "Matutino",
   VESPERTINO = "Vespertino",
   NOTURNO = "Noturno",
+  INTEGRAL = "Integral",
 }
 
 export enum Convenio {
   PROUNI = "ProUni",
   FIES = "FIES",
   EDUCAMAIS = "EducaMais",
-  BOLSA = "Bolsa"
+  BOLSA = "Bolsa",
 }
