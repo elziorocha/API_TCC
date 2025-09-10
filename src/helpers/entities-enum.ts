@@ -21,6 +21,7 @@ export enum Turno {
 }
 
 export enum Convenio {
+  SEM_CONVENIO = "Sem Convênio",
   PROUNI = "ProUni",
   FIES = "FIES",
   EDUCAMAIS = "EducaMais",

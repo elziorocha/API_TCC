@@ -6,6 +6,8 @@ import { validate } from "class-validator";
 import { Aluno_Matricula } from "../entities/Aluno_Matricula";
 import { plainToInstance } from "class-transformer";
 import { ErrosValidacao } from "../helpers/error-validator";
+import { GrauEscolaridade } from "../helpers/entities-enum";
+import { optionCamposPorGrau } from "../helpers/grau-escolaridade-options";
 
 export class AlunoMatriculaController {
   async create(req: Request<any, any, AlunoMatriculaInterface>, res: Response) {
@@ -34,8 +36,10 @@ export class AlunoMatriculaController {
       );
     }
 
+    const alunoMatriculaDataFiltrado = optionCamposPorGrau(alunoMatriculaData);
+
     const novoAlunoMatricula = plainToInstance(Aluno_Matricula, {
-      ...alunoMatriculaData,
+      ...alunoMatriculaDataFiltrado,
       aluno,
     });
 

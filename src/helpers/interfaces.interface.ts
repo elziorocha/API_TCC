@@ -7,7 +7,7 @@ export interface TokenPayloadInterface {
   tokenVersion: number;
 }
 
-export interface AlterarSenhaInterface{
+export interface AlterarSenhaInterface {
   senhaAntiga: string;
   novaSenha: string;
 }
@@ -59,10 +59,10 @@ export interface AlunoMatriculaInterface {
   data_fim: Date;
   grau_scolaridade: GrauEscolaridade;
   serie_ou_periodo: number;
-  curso: string;
+  curso?: string;
   turno: Turno;
   convenio: Convenio;
-  cgm: string;
-  distancia_instituicao: number;
+  cgm?: string;
+  distancia_instituicao?: number;
   status_matricula: boolean;
 }

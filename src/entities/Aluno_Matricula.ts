@@ -1,6 +1,14 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Aluno } from "./Aluno";
-import { IsDate, IsEnum, IsInt, IsOptional, Length, Max, Min } from "class-validator";
+import {
+  IsDate,
+  IsEnum,
+  IsInt,
+  IsOptional,
+  Length,
+  Max,
+  Min,
+} from "class-validator";
 import { Type } from "class-transformer";
 import { Convenio, GrauEscolaridade, Turno } from "../helpers/entities-enum";
 
@@ -16,27 +24,29 @@ export class Aluno_Matricula {
   ano_letivo: number;
 
   @Column({ nullable: false })
-  @Length(8, 155, { message: "A instituição deve conter entre 8 e 155 caracteres." })
+  @Length(8, 155, {
+    message: "A instituição deve conter entre 8 e 155 caracteres.",
+  })
   instituicao: string;
 
   @Column({ type: "date", nullable: false })
   @Type(() => Date)
   @IsDate({ message: "Data de início inválida." })
-  data_inicio: Date;
+  data_inicio: string;
 
   @Column({ type: "date", nullable: false })
   @Type(() => Date)
   @IsDate({ message: "Data de término inválida." })
-  data_fim: Date;
+  data_fim: string;
 
   @Column({ type: "enum", enum: GrauEscolaridade, nullable: false })
   @IsEnum(GrauEscolaridade, { message: "Grau de escolaridade inválido." })
   grau_scolaridade: GrauEscolaridade;
 
-  @Column({ type: "int", nullable: false, default: 0, })
+  @Column({ type: "int", nullable: false, default: 0 })
   @IsInt({ message: "Série ou período deve ser um número." })
-  @Min(0, { message: "A série ou o período deve ser entre 0 e 9." })
-  @Max(9, { message: "A série ou o período deve ser entre 0 e 9." })
+  @Min(1, { message: "A série ou o período deve ser entre 1 e 20." })
+  @Max(20, { message: "A série ou o período deve ser entre 1 e 20." })
   serie_ou_periodo: number;
 
   @Column({ nullable: true })
