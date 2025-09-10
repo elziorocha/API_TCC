@@ -6,6 +6,7 @@ import {
   IsInt,
   IsOptional,
   Length,
+  Matches,
   Max,
   Min,
 } from "class-validator";
@@ -30,13 +31,11 @@ export class Aluno_Matricula {
   instituicao: string;
 
   @Column({ type: "date", nullable: false })
-  @Type(() => Date)
-  @IsDate({ message: "Data de início inválida." })
+  @Matches(/^\d{4}-\d{2}-\d{2}$/, { message: "Data de início inválida." })
   data_inicio: string;
 
   @Column({ type: "date", nullable: false })
-  @Type(() => Date)
-  @IsDate({ message: "Data de término inválida." })
+  @Matches(/^\d{4}-\d{2}-\d{2}$/, { message: "Data de término inválida." })
   data_fim: string;
 
   @Column({ type: "enum", enum: GrauEscolaridade, nullable: false })
