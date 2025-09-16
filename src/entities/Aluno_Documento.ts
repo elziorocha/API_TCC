@@ -20,15 +20,6 @@ export class Aluno_Documento {
   @Column({ nullable: false })
   orgao_emissor: string;
 
-  @Column({ nullable: false })
-  comprovante_matricula: string;
-
-  @Column({ nullable: false })
-  atestado_frequencia: string;
-
-  @Column({ type: "boolean", default: false })
-  liberado: boolean;
-
   @OneToOne(() => Aluno, (aluno) => aluno.aluno_documento)
   aluno: Aluno;
 }

@@ -32,9 +32,6 @@ export interface AlunoDocumentoInterface {
   rg: string;
   cpf: string;
   orgao_emissor: string;
-  comprovante_matricula: string;
-  atestado_frequencia: string;
-  liberado: boolean;
 }
 
 export interface AlunoEnderecoInterface {
@@ -65,4 +62,13 @@ export interface AlunoMatriculaInterface {
   cgm?: string;
   distancia_instituicao?: number;
   status_matricula: boolean;
+}
+
+export interface AlunoProcessoInterface {
+  formulario_educard: string;
+  declaracao_matricula: string;
+  comprovante_pagamento: string;
+  comprovante_residência: string;
+  rf_frente_ou_verso: string;
+  liberado: boolean;
 }

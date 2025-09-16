@@ -12,6 +12,7 @@ import { Aluno_Responsavel } from "./Aluno_Responsavel";
 import { IsDate, IsEmail, Length, Matches, MinLength } from "class-validator";
 import { Aluno_Matricula } from "./Aluno_Matricula";
 import { TipoCartao } from "../helpers/entities-enum";
+import { Aluno_Processo } from "./Aluno_Processo";
 
 @Entity("alunos")
 export class Aluno {
@@ -89,4 +90,10 @@ export class Aluno {
     eager: true,
   })
   aluno_matricula?: Aluno_Matricula[];
+
+  @OneToMany(() => Aluno_Processo, (processo) => processo.aluno, {
+    cascade: true,
+    eager: true,
+  })
+  aluno_processo?: Aluno_Processo[];
 }
