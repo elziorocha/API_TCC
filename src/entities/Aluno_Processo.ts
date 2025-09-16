@@ -1,4 +1,11 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { Aluno } from "./Aluno";
 import { IsString, Matches } from "class-validator";
 
@@ -45,6 +52,7 @@ export class Aluno_Processo {
   @Column({ type: "boolean", default: false })
   liberado: boolean;
 
-  @OneToOne(() => Aluno, (aluno) => aluno.aluno_processo)
+  @ManyToOne(() => Aluno, (aluno) => aluno.aluno_processo, { nullable: false })
+  @JoinColumn({ name: "aluno_id" })
   aluno: Aluno;
 }
