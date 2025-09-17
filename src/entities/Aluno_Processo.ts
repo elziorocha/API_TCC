@@ -52,7 +52,6 @@ export class Aluno_Processo {
   @Column({ type: "boolean", default: false })
   liberado: boolean;
 
-  @ManyToOne(() => Aluno, (aluno) => aluno.aluno_processo, { nullable: false })
-  @JoinColumn({ name: "aluno_id" })
+  @ManyToOne(() => Aluno, (aluno) => aluno.aluno_matricula, { nullable: false })
   aluno: Aluno;
 }

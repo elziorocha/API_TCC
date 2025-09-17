@@ -4,6 +4,8 @@ import { validate } from "class-validator";
 import { ErrosValidacao } from "../helpers/error-validator";
 import { AlunoProcessoInterface } from "../helpers/interfaces.interface";
 import { AlunoProcessosRepository, AlunoRepository } from "../repositories";
+import { plainToInstance } from "class-transformer";
+import { Aluno_Processo } from "../entities/Aluno_Processo";
 
 export class AlunoProcessoController {
   async create(req: Request<any, any, AlunoProcessoInterface>, res: Response) {
@@ -29,7 +31,7 @@ export class AlunoProcessoController {
       );
     }
 
-    const novoAlunoProcesso = AlunoProcessosRepository.create({
+    const novoAlunoProcesso = plainToInstance(Aluno_Processo, {
       ...alunoProcessoData,
       aluno,
     });
