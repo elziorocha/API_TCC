@@ -1,11 +1,12 @@
 import { Router } from "express";
+import { AuthController } from "./controllers/AuthController";
+import { authMiddleware } from "./middlewares/authMiddleware";
 import { AlunoController } from "./controllers/AlunoController";
 import { AlunoDocumentoController } from "./controllers/AlunoDocumentoController";
 import { AlunoEnderecoController } from "./controllers/AlunoEnderecoController";
 import { AlunoResponsavelController } from "./controllers/AlunoResponsavelController";
-import { AuthController } from "./controllers/AuthController";
-import { authMiddleware } from "./middlewares/authMiddleware";
 import { AlunoMatriculaController } from "./controllers/AlunoMatriculaController";
+import { AlunoProcessoController } from "./controllers/AlunoProcessoController";
 
 const routes = Router();
 
@@ -27,6 +28,9 @@ routes.get("/api/aluno/responsavel", new AlunoResponsavelController().list);
 
 routes.post("/api/aluno/matricula", new AlunoMatriculaController().create);
 routes.get("/api/aluno/matricula", new AlunoMatriculaController().list);
+
+routes.post("/api/aluno/processo", new AlunoProcessoController().create);
+routes.get("/api/aluno/processo", new AlunoProcessoController().list);
 
 routes.post("/api/aluno/logout", new AuthController().logout);
 
