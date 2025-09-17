@@ -8,6 +8,7 @@ import {
 } from "typeorm";
 import { Aluno } from "./Aluno";
 import { IsString, Matches } from "class-validator";
+import { Aluno_Matricula } from "./Aluno_Matricula";
 
 @Entity("aluno_processos")
 export class Aluno_Processo {
@@ -52,6 +53,9 @@ export class Aluno_Processo {
   @Column({ type: "boolean", default: false })
   liberado: boolean;
 
-  @ManyToOne(() => Aluno, (aluno) => aluno.aluno_matricula, { nullable: false })
+  @ManyToOne(() => Aluno_Matricula, { nullable: false })
+  aluno_matricula: Aluno_Matricula;
+
+  @ManyToOne(() => Aluno, (aluno) => aluno.aluno_processo, { nullable: false })
   aluno: Aluno;
 }

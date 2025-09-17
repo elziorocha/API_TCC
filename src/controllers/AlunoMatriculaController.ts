@@ -6,7 +6,6 @@ import { validate } from "class-validator";
 import { Aluno_Matricula } from "../entities/Aluno_Matricula";
 import { plainToInstance } from "class-transformer";
 import { ErrosValidacao } from "../helpers/error-validator";
-import { GrauEscolaridade } from "../helpers/entities-enum";
 import { optionCamposPorGrau } from "../helpers/grau-escolaridade-options";
 
 export class AlunoMatriculaController {
@@ -19,9 +18,7 @@ export class AlunoMatriculaController {
       relations: ["aluno_matricula"],
     });
 
-    if (!aluno) {
-      throw new NotFoundError("Aluno não encontrado.");
-    }
+    if (!aluno) throw new NotFoundError("Aluno não encontrado.");
 
     const matriculaExisteNesteAno = await AlunoMatriculaRepository.findOne({
       where: {

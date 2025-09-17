@@ -14,12 +14,15 @@ export class AlunoProcessoController {
 
     const aluno = await AlunoRepository.findOne({
       where: { id: alunoId },
-      relations: ["aluno_processo"],
+      relations: [
+        "aluno_documento",
+        "aluno_endereco",
+        "aluno_responsavel",
+        "aluno_matricula",
+      ],
     });
 
-    if (!aluno) {
-      throw new NotFoundError("Aluno não encontrado.");
-    }
+    if (!aluno) throw new NotFoundError("Aluno não encontrado.");
 
     if (
       !aluno.aluno_documento ||
@@ -31,13 +34,25 @@ export class AlunoProcessoController {
       );
     }
 
+    const anoAtual = new Date().getFullYear();
+    const matriculaVigente = aluno.aluno_matricula?.find(
+      (matricula) =>
+        matricula.ano_letivo === anoAtual && matricula.status_matricula === true
+    );
+
+    if (!matriculaVigente) {
+      throw new UnprocessableEntityError(
+        "Para cadastrar um Processo Digital é necessário que o aluno tenha uma Matrícula vigente neste ano."
+      );
+    }
+
     const novoAlunoProcesso = plainToInstance(Aluno_Processo, {
       ...alunoProcessoData,
       aluno,
+      aluno_matricula: matriculaVigente,
     });
 
     const errosValidacao = await validate(novoAlunoProcesso);
-
     if (errosValidacao.length > 0) {
       ErrosValidacao(errosValidacao, res);
       return;
@@ -45,9 +60,17 @@ export class AlunoProcessoController {
 
     await AlunoProcessosRepository.save(novoAlunoProcesso);
 
-    const { id: _, ...novoAlunoProcessoSemId } = novoAlunoProcesso;
+    const {
+      aluno: _,
+      aluno_matricula: __,
+      ...novoAlunoProcessoOtimizado
+    } = novoAlunoProcesso;
 
-    res.status(201).json(novoAlunoProcessoSemId);
+    res.status(201).json({
+      ...novoAlunoProcessoOtimizado,
+      alunoId: aluno.id,
+      matriculaId: matriculaVigente.id,
+    });
   }
 
   async list(req: Request, res: Response) {
@@ -55,13 +78,21 @@ export class AlunoProcessoController {
 
     const aluno = await AlunoRepository.findOne({
       where: { id: alunoId },
-      relations: ["aluno_processo"],
+      relations: ["aluno_processo", "aluno_processo.aluno_matricula"],
     });
 
     if (!aluno) {
       throw new NotFoundError(`Erro ao encontrar processo do aluno ${alunoId}`);
     }
 
-    res.status(200).json(aluno.aluno_processo);
+    const alunoProcessosData = aluno.aluno_processo?.map(
+      ({ aluno_matricula, aluno, ...processo }) => ({
+        ...processo,
+        alunoId: aluno?.id ?? alunoId,
+        matriculaId: aluno_matricula?.id,
+      })
+    );
+
+    res.status(200).json(alunoProcessosData);
   }
 }
