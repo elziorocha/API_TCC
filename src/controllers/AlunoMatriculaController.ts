@@ -54,9 +54,9 @@ export class AlunoMatriculaController {
 
     await AlunoMatriculaRepository.save(novoAlunoMatricula);
 
-    const { id: _, ...novoAlunoMatriculaSemId } = novoAlunoMatricula;
+    const { aluno: _, id: __, ...novoAlunoMatriculaSemId } = novoAlunoMatricula;
 
-    res.status(201).json(novoAlunoMatriculaSemId);
+    res.status(201).json({ ...novoAlunoMatriculaSemId, alunoId: aluno.id });
   }
 
   async list(req: Request, res: Response) {
