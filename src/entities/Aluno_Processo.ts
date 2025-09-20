@@ -41,7 +41,7 @@ export class Aluno_Processo {
   @Matches(/\.(jpg|jpeg|png)$/i, {
     message: "O Comprovante de Residência deve ser uma imagem (.JPG ou .PNG)",
   })
-  comprovante_residência: string;
+  comprovante_residencia: string;
 
   @Column()
   @IsString()

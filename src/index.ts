@@ -17,7 +17,7 @@ AppDataSource.initialize().then(() => {
   app.use(express.json());
 
   app.use(routes);
-
+  app.use("/uploads", express.static("uploads"));
   app.use(errorMiddleware);
 
   cronVerificarAnoLetivo();

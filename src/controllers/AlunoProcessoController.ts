@@ -8,9 +8,9 @@ import { plainToInstance } from "class-transformer";
 import { Aluno_Processo } from "../entities/Aluno_Processo";
 
 export class AlunoProcessoController {
-  async create(req: Request<any, any, AlunoProcessoInterface>, res: Response) {
+  async create(req: Request, res: Response) {
     const alunoId = req.alunoLogin.id;
-    const alunoProcessoData = req.body;
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
 
     const aluno = await AlunoRepository.findOne({
       where: { id: alunoId },
@@ -45,6 +45,15 @@ export class AlunoProcessoController {
         "Para cadastrar um Processo Digital é necessário que o aluno tenha uma Matrícula vigente neste ano."
       );
     }
+
+    const alunoProcessoData: AlunoProcessoInterface = {
+      formulario_educard: files.formulario_educard?.[0]?.path || "",
+      declaracao_matricula: files.declaracao_matricula?.[0]?.path || "",
+      comprovante_pagamento: files.comprovante_pagamento?.[0]?.path || "",
+      comprovante_residencia: files.comprovante_residencia?.[0]?.path || "",
+      rf_frente_ou_verso: files.rf_frente_ou_verso?.[0]?.path || "",
+      liberado: false,
+    };
 
     const novoAlunoProcesso = plainToInstance(Aluno_Processo, {
       ...alunoProcessoData,

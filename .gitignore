@@ -17,3 +17,5 @@ Thumbs.db
 # Ignorar build
 dist/
 build/
+
+/uploads

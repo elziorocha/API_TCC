@@ -68,7 +68,7 @@ export interface AlunoProcessoInterface {
   formulario_educard: string;
   declaracao_matricula: string;
   comprovante_pagamento: string;
-  comprovante_residência: string;
+  comprovante_residencia: string;
   rf_frente_ou_verso: string;
   liberado: boolean;
 }

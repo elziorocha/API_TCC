@@ -7,6 +7,9 @@ import { AlunoEnderecoController } from "./controllers/AlunoEnderecoController";
 import { AlunoResponsavelController } from "./controllers/AlunoResponsavelController";
 import { AlunoMatriculaController } from "./controllers/AlunoMatriculaController";
 import { AlunoProcessoController } from "./controllers/AlunoProcessoController";
+import { uploadImagem } from "./helpers/multer-config";
+
+const alunoProcessoController = new AlunoProcessoController();
 
 const routes = Router();
 
@@ -29,8 +32,22 @@ routes.get("/api/aluno/responsavel", new AlunoResponsavelController().list);
 routes.post("/api/aluno/matricula", new AlunoMatriculaController().create);
 routes.get("/api/aluno/matricula", new AlunoMatriculaController().list);
 
-routes.post("/api/aluno/processo", new AlunoProcessoController().create);
-routes.get("/api/aluno/processo", new AlunoProcessoController().list);
+routes.post(
+  "/api/aluno/processo",
+  uploadImagem.fields([
+    { name: "formulario_educard", maxCount: 1 },
+    { name: "declaracao_matricula", maxCount: 1 },
+    { name: "comprovante_pagamento", maxCount: 1 },
+    { name: "comprovante_residencia", maxCount: 1 },
+    { name: "rf_frente_ou_verso", maxCount: 1 },
+  ]),
+  alunoProcessoController.create.bind(alunoProcessoController)
+);
+
+routes.get(
+  "/api/aluno/processo",
+  alunoProcessoController.list.bind(alunoProcessoController)
+);
 
 routes.post("/api/aluno/logout", new AuthController().logout);
 
