@@ -6,6 +6,7 @@ import { AlunoProcessoInterface } from "../helpers/interfaces.interface";
 import { AlunoProcessosRepository, AlunoRepository } from "../repositories";
 import { plainToInstance } from "class-transformer";
 import { Aluno_Processo } from "../entities/Aluno_Processo";
+import { gerarUrlsArquivos } from "../helpers/gerar-url-arquivos";
 
 export class AlunoProcessoController {
   async create(req: Request, res: Response) {
@@ -55,6 +56,8 @@ export class AlunoProcessoController {
       liberado: false,
     };
 
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
+
     const novoAlunoProcesso = plainToInstance(Aluno_Processo, {
       ...alunoProcessoData,
       aluno,
@@ -77,6 +80,7 @@ export class AlunoProcessoController {
 
     res.status(201).json({
       ...novoAlunoProcessoOtimizado,
+      ...gerarUrlsArquivos(novoAlunoProcessoOtimizado, baseUrl),
       alunoId: aluno.id,
       matriculaId: matriculaVigente.id,
     });
@@ -94,9 +98,12 @@ export class AlunoProcessoController {
       throw new NotFoundError(`Erro ao encontrar processo do aluno ${alunoId}`);
     }
 
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
+
     const alunoProcessosData = aluno.aluno_processo?.map(
       ({ aluno_matricula, aluno, ...processo }) => ({
         ...processo,
+        ...gerarUrlsArquivos(processo, baseUrl),
         alunoId: aluno?.id ?? alunoId,
         matriculaId: aluno_matricula?.id,
       })
