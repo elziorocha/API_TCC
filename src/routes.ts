@@ -39,7 +39,7 @@ routes.post(
     { name: "declaracao_matricula", maxCount: 1 },
     { name: "comprovante_pagamento", maxCount: 1 },
     { name: "comprovante_residencia", maxCount: 1 },
-    { name: "rf_frente_ou_verso", maxCount: 1 },
+    { name: "rg_frente_ou_verso", maxCount: 1 },
   ]),
   alunoProcessoController.create.bind(alunoProcessoController)
 );

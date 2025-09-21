@@ -48,7 +48,7 @@ export class Aluno_Processo {
   @Matches(/\.(jpg|jpeg|png)$/i, {
     message: "A foto do RG Frente e Verso deve ser uma imagem (.JPG ou .PNG)",
   })
-  rf_frente_ou_verso: string;
+  rg_frente_ou_verso: string;
 
   @Column({ type: "boolean", default: false })
   liberado: boolean;

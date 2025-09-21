@@ -52,7 +52,7 @@ export class AlunoProcessoController {
       declaracao_matricula: files.declaracao_matricula?.[0]?.path || "",
       comprovante_pagamento: files.comprovante_pagamento?.[0]?.path || "",
       comprovante_residencia: files.comprovante_residencia?.[0]?.path || "",
-      rf_frente_ou_verso: files.rf_frente_ou_verso?.[0]?.path || "",
+      rg_frente_ou_verso: files.rg_frente_ou_verso?.[0]?.path || "",
       liberado: false,
     };
 

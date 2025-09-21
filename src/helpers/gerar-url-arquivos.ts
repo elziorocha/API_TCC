@@ -29,9 +29,9 @@ export function gerarUrlsArquivos(
             .split("uploads/")[1]
         }`
       : null,
-    rf_frente_ou_verso_url: processo.rf_frente_ou_verso
+    rg_frente_ou_verso_url: processo.rg_frente_ou_verso
       ? `${baseUrl}/uploads/${
-          processo.rf_frente_ou_verso.replace(/\\/g, "/").split("uploads/")[1]
+          processo.rg_frente_ou_verso.replace(/\\/g, "/").split("uploads/")[1]
         }`
       : null,
   };
