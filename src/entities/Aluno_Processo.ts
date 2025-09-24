@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Aluno } from "./Aluno";
 import { IsString, Matches } from "class-validator";
 import { Aluno_Matricula } from "./Aluno_Matricula";
