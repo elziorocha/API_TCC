@@ -20,12 +20,27 @@ export class AuthController {
   ) {
     const alunoData = req.body;
 
+    const dataNascimento = new Date(alunoData.data_nascimento);
+
+    if (isNaN(dataNascimento.getTime())) {
+      throw new BadRequestError("Data de nascimento inválida.");
+    }
+
+    const anoDataNascimento = dataNascimento.getFullYear();
+    if (anoDataNascimento < 1925 || anoDataNascimento > 2020) {
+      throw new BadRequestError(
+        "A data de nascimento deve estar entre 1925 e 2020."
+      );
+    }
+
     const alunoInstancia = plainToInstance(AlunoEntity, {
       ...alunoData,
-      data_nascimento: new Date(alunoData.data_nascimento)
+      data_nascimento: new Date(alunoData.data_nascimento),
     });
 
-    const errosValidacao = await validate(alunoInstancia, { stopAtFirstError: false });
+    const errosValidacao = await validate(alunoInstancia, {
+      stopAtFirstError: false,
+    });
 
     if (errosValidacao.length > 0) {
       ErrosValidacao(errosValidacao, res);
@@ -118,7 +133,7 @@ export class AuthController {
   async alterarSenha(
     req: Request<any, any, AlterarSenhaInterface>,
     res: Response
-  ){
+  ) {
     const { senhaAntiga, novaSenha } = req.body;
     const alunoId = req.params.id;
 
@@ -129,7 +144,7 @@ export class AuthController {
     }
 
     const senhaCorreta = await bcrypt.compare(senhaAntiga, aluno.senha);
-    
+
     switch (true) {
       case !senhaCorreta:
         throw new BadRequestError("Senha antiga incorreta.");
@@ -163,5 +178,4 @@ export class AuthController {
 
     res.status(200).json({ message: "Logout realizado com sucesso!" });
   }
-
 }
