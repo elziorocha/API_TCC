@@ -8,13 +8,13 @@ export class Aluno_Documento {
   id: number;
 
   @Column({ unique: true, nullable: false })
-  @Length(7, 9, { message: "O RG deve conter entre 7 e 9 dígitos." })
-  @Matches(/^\d+$/, { message: "O RG deve conter apenas números." })
+  @Length(7, 9, { message: "O RG deve conter entre 7 e 9 dígitos" })
+  @Matches(/^\d+$/, { message: "O RG deve conter apenas números" })
   rg: string;
 
   @Column({ unique: true, nullable: false })
-  @Length(11, 11, { message: "O CPF deve conter exatamente 11 dígitos." })
-  @Matches(/^\d{11}$/, { message: "O CPF deve conter apenas números." })
+  @Length(11, 11, { message: "O CPF deve conter exatamente 11 dígitos" })
+  @Matches(/^\d{11}$/, { message: "O CPF deve conter apenas números" })
   cpf: string;
 
   @Column({ nullable: false })

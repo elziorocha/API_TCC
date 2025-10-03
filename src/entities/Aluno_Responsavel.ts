@@ -8,25 +8,25 @@ export class Aluno_Responsavel {
   id: number;
 
   @Column({ nullable: false })
-  @Length(11, 11, { message: "O CPF deve conter exatamente 11 dígitos." })
-  @Matches(/^\d{11}$/, { message: "O CPF deve conter apenas números." })
+  @Length(11, 11, { message: "O CPF deve conter exatamente 11 dígitos" })
+  @Matches(/^\d{11}$/, { message: "O CPF deve conter apenas números" })
   cpf_mae: string;
 
   @Column({ type: "text", nullable: false })
   @Matches(/^[A-Za-zÀ-ÿ\s]+$/, {
-    message: "O campo deve conter apenas letras.",
+    message: "O campo deve conter apenas letras",
   })
   nome_mae: string;
 
   @Column({ type: "text", nullable: false })
   @Matches(/^[A-Za-zÀ-ÿ\s]+$/, {
-    message: "O campo deve conter apenas letras.",
+    message: "O campo deve conter apenas letras",
   })
   nome_pai: string;
 
   @Column({ type: "text", nullable: false })
   @Matches(/^[A-Za-zÀ-ÿ\s]+$/, {
-    message: "O campo deve conter apenas letras.",
+    message: "O campo deve conter apenas letras",
   })
   nome_responsavel: string;
 
