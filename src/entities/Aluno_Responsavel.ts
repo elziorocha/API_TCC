@@ -14,19 +14,19 @@ export class Aluno_Responsavel {
 
   @Column({ type: "text", nullable: false })
   @Matches(/^[A-Za-zÀ-ÿ\s]+$/, {
-    message: "O campo deve conter apenas letras",
+    message: "O campo nome da mãe deve conter apenas letras",
   })
   nome_mae: string;
 
   @Column({ type: "text", nullable: false })
   @Matches(/^[A-Za-zÀ-ÿ\s]+$/, {
-    message: "O campo deve conter apenas letras",
+    message: "O campo nome do pai deve conter apenas letras",
   })
   nome_pai: string;
 
   @Column({ type: "text", nullable: false })
   @Matches(/^[A-Za-zÀ-ÿ\s]+$/, {
-    message: "O campo deve conter apenas letras",
+    message: "O campo nome do responsável deve conter apenas letras",
   })
   nome_responsavel: string;
 
