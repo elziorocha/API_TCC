@@ -8,7 +8,7 @@ export class Aluno_Documento {
   id: number;
 
   @Column({ unique: true, nullable: false })
-  @Length(7, 9, { message: "O RG deve conter entre 7 e 9 dígitos" })
+  @Length(7, 10, { message: "O RG deve conter entre 7 e 10 dígitos" })
   @Matches(/^\d+$/, { message: "O RG deve conter apenas números" })
   rg: string;
 
