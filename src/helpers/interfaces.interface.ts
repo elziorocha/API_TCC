@@ -65,10 +65,13 @@ export interface AlunoMatriculaInterface {
 }
 
 export interface AlunoProcessoInterface {
-  formulario_educard: string;
-  declaracao_matricula: string;
-  comprovante_pagamento: string;
-  comprovante_residencia: string;
-  rg_frente_ou_verso: string;
+  id?: number;
+  formulario_educard: string | null;
+  declaracao_matricula: string | null;
+  comprovante_pagamento: string | null;
+  comprovante_residencia: string | null;
+  rg_frente_ou_verso: string | null;
   liberado: boolean;
+  data_criacao?: Date;
+  prazo_final?: Date;
 }

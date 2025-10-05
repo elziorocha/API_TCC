@@ -111,4 +111,49 @@ export class AlunoProcessoController {
 
     res.status(200).json(alunoProcessosData);
   }
+
+  async iniciarProcesso(req: Request, res: Response) {
+    const alunoId = req.alunoLogin.id;
+
+    const aluno = await AlunoRepository.findOne({
+      where: { id: alunoId },
+      relations: ["aluno_matricula"],
+    });
+
+    if (!aluno) throw new NotFoundError("Aluno não encontrado.");
+
+    const anoAtual = new Date().getFullYear();
+    const matriculaVigente = aluno.aluno_matricula?.find(
+      (matricula) =>
+        matricula.ano_letivo === anoAtual && matricula.status_matricula === true
+    );
+
+    if (!matriculaVigente) {
+      throw new UnprocessableEntityError(
+        "Para iniciar um Processo Digital, é necessário ter uma matrícula vigente."
+      );
+    }
+
+    const novoProcesso = AlunoProcessosRepository.create({
+      formulario_educard: null,
+      declaracao_matricula: null,
+      comprovante_pagamento: null,
+      comprovante_residencia: null,
+      rg_frente_ou_verso: null,
+      liberado: false,
+      aluno,
+      aluno_matricula: matriculaVigente,
+      data_criacao: new Date(),
+      prazo_final: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000),
+    });
+
+    await AlunoProcessosRepository.save(novoProcesso);
+
+    return res.status(201).json({
+      message:
+        "Processo iniciado com sucesso! Você tem 15 dias para concluir o envio dos itens necessários.",
+      processoId: novoProcesso.id,
+      prazo_final: novoProcesso.prazo_final,
+    });
+  }
 }
