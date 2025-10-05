@@ -8,39 +8,29 @@ export class Aluno_Processo {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ type: "varchar", nullable: true })
   @IsString()
-  @Matches(/\.pdf$/i, {
-    message: "O Formulário EDUCARD deve ser um arquivo .PDF",
-  })
+  @Matches(/\.pdf$/i, { message: "..." })
   formulario_educard: string | null;
 
-  @Column()
+  @Column({ type: "varchar", nullable: true })
   @IsString()
-  @Matches(/\.pdf$/i, {
-    message: "O Comprovante de Matrícula deve ser um arquivo .PDF",
-  })
+  @Matches(/\.pdf$/i, { message: "..." })
   declaracao_matricula: string | null;
 
-  @Column()
+  @Column({ type: "varchar", nullable: true })
   @IsString()
-  @Matches(/\.(jpg|jpeg|png)$/i, {
-    message: "O Comprovante de Pagamento deve ser uma imagem (.JPG ou .PNG)",
-  })
+  @Matches(/\.(jpg|jpeg|png)$/i, { message: "..." })
   comprovante_pagamento: string | null;
 
-  @Column()
+  @Column({ type: "varchar", nullable: true })
   @IsString()
-  @Matches(/\.(jpg|jpeg|png)$/i, {
-    message: "O Comprovante de Residência deve ser uma imagem (.JPG ou .PNG)",
-  })
+  @Matches(/\.(jpg|jpeg|png)$/i, { message: "..." })
   comprovante_residencia: string | null;
 
-  @Column()
+  @Column({ type: "varchar", nullable: true })
   @IsString()
-  @Matches(/\.(jpg|jpeg|png)$/i, {
-    message: "A foto do RG Frente e Verso deve ser uma imagem (.JPG ou .PNG)",
-  })
+  @Matches(/\.(jpg|jpeg|png)$/i, { message: "..." })
   rg_frente_ou_verso: string | null;
 
   @Column({ type: "boolean", default: false })
