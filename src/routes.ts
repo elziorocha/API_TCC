@@ -49,6 +49,11 @@ routes.get(
   alunoProcessoController.list.bind(alunoProcessoController)
 );
 
+routes.post(
+  "/api/aluno/processo/iniciar",
+  alunoProcessoController.iniciarProcesso.bind(alunoProcessoController)
+);
+
 routes.post("/api/aluno/logout", new AuthController().logout);
 
 export default routes;
