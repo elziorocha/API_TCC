@@ -134,6 +134,17 @@ export class AlunoProcessoController {
       );
     }
 
+    const processoAtivo = aluno.aluno_processo?.find((processo) => {
+      const prazoFinal = new Date(processo.prazo_final);
+      const agora = new Date();
+      const expirado = prazoFinal < agora;
+      return !expirado && processo.liberado === false;
+    });
+
+    if (processoAtivo) {
+      throw new UnprocessableEntityError("Aluno já possui um processo ativo.");
+    }
+
     const novoProcesso = AlunoProcessosRepository.create({
       formulario_educard: null,
       declaracao_matricula: null,
