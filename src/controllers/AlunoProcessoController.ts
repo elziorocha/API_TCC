@@ -1,5 +1,10 @@
 import { Request, Response } from "express";
-import { NotFoundError, UnprocessableEntityError } from "../helpers/api-errors";
+import {
+  BadRequestError,
+  ConflictError,
+  NotFoundError,
+  UnprocessableEntityError,
+} from "../helpers/api-errors";
 import { validate } from "class-validator";
 import { ErrosValidacao } from "../helpers/error-validator";
 import { AlunoProcessoInterface } from "../helpers/interfaces.interface";
@@ -173,20 +178,11 @@ export class AlunoProcessoController {
 
     const processoAtivo = aluno.aluno_processo?.find((processo) => {
       const prazoFinal = new Date(processo.prazo_final);
-      const agora = new Date();
-      const expirado = prazoFinal < agora;
-      return !expirado && processo.liberado === false;
+      return prazoFinal >= new Date() && processo.liberado === false;
     });
 
     if (processoAtivo) {
-      res.status(200).json({
-        message:
-          "Você já possui um processo em andamento. Continue o envio dos documentos pendentes.",
-        processoId: processoAtivo.id,
-        prazo_final: processoAtivo.prazo_final,
-        existente: true,
-      });
-      return;
+      throw new ConflictError("Já existe um processo em andamento.");
     }
 
     const novoProcesso = AlunoProcessosRepository.create({
