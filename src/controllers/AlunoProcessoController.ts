@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import {
-  BadRequestError,
   ConflictError,
   NotFoundError,
   UnprocessableEntityError,
@@ -19,19 +18,17 @@ export class AlunoProcessoController {
     const files = req.files as { [fieldname: string]: Express.Multer.File[] };
 
     const processoAtivo = await AlunoProcessosRepository.findOne({
-      where: {
-        aluno: { id: alunoId },
-        liberado: false,
-      },
+      where: { aluno: { id: alunoId }, liberado: false },
       relations: ["aluno", "aluno_matricula"],
     });
 
     if (!processoAtivo) {
-      throw new UnprocessableEntityError("Nenhum processo ativo encontrado.");
+      throw new UnprocessableEntityError(
+        "Nenhum processo ativo encontrado. Inicie um processo antes de enviar documentos."
+      );
     }
 
-    const dataAtual = new Date();
-    if (new Date(processoAtivo.prazo_final) < dataAtual) {
+    if (new Date(processoAtivo.prazo_final) < new Date()) {
       throw new UnprocessableEntityError("O prazo do processo expirou.");
     }
 
@@ -53,23 +50,23 @@ export class AlunoProcessoController {
       !aluno.aluno_responsavel
     ) {
       throw new UnprocessableEntityError(
-        "Para cadastrar um Processo Digital é necessário que o aluno tenha Documento, Endereço e Responsáveis cadastrados."
+        "Para enviar documentos, o aluno precisa ter Documento, Endereço e Responsáveis cadastrados."
       );
     }
 
     processoAtivo.formulario_educard =
-      files.formulario_educard?.[0]?.path || processoAtivo.formulario_educard;
+      files.formulario_educard?.[0]?.path ?? processoAtivo.formulario_educard;
     processoAtivo.declaracao_matricula =
-      files.declaracao_matricula?.[0]?.path ||
+      files.declaracao_matricula?.[0]?.path ??
       processoAtivo.declaracao_matricula;
     processoAtivo.comprovante_pagamento =
-      files.comprovante_pagamento?.[0]?.path ||
+      files.comprovante_pagamento?.[0]?.path ??
       processoAtivo.comprovante_pagamento;
     processoAtivo.comprovante_residencia =
-      files.comprovante_residencia?.[0]?.path ||
+      files.comprovante_residencia?.[0]?.path ??
       processoAtivo.comprovante_residencia;
     processoAtivo.rg_frente_ou_verso =
-      files.rg_frente_ou_verso?.[0]?.path || processoAtivo.rg_frente_ou_verso;
+      files.rg_frente_ou_verso?.[0]?.path ?? processoAtivo.rg_frente_ou_verso;
 
     const anoAtual = new Date().getFullYear();
     const matriculaVigente = aluno.aluno_matricula?.find(
@@ -79,25 +76,25 @@ export class AlunoProcessoController {
 
     if (!matriculaVigente) {
       throw new UnprocessableEntityError(
-        "Para cadastrar um Processo Digital é necessário que o aluno tenha uma Matrícula vigente neste ano."
+        "O aluno precisa ter uma matrícula vigente neste ano para enviar documentos."
       );
     }
 
     const alunoProcessoData: AlunoProcessoInterface = {
-      formulario_educard: files.formulario_educard?.[0]?.path || "",
-      declaracao_matricula: files.declaracao_matricula?.[0]?.path || "",
-      comprovante_pagamento: files.comprovante_pagamento?.[0]?.path || "",
-      comprovante_residencia: files.comprovante_residencia?.[0]?.path || "",
-      rg_frente_ou_verso: files.rg_frente_ou_verso?.[0]?.path || "",
-      liberado: false,
+      formulario_educard: processoAtivo.formulario_educard,
+      declaracao_matricula: processoAtivo.declaracao_matricula,
+      comprovante_pagamento: processoAtivo.comprovante_pagamento,
+      comprovante_residencia: processoAtivo.comprovante_residencia,
+      rg_frente_ou_verso: processoAtivo.rg_frente_ou_verso,
+      liberado: processoAtivo.liberado,
     };
-
-    const baseUrl = `${req.protocol}://${req.get("host")}`;
 
     const novoAlunoProcesso = plainToInstance(Aluno_Processo, {
       ...alunoProcessoData,
       aluno,
       aluno_matricula: matriculaVigente,
+      data_criacao: processoAtivo.data_criacao,
+      prazo_final: processoAtivo.prazo_final,
     });
 
     const errosValidacao = await validate(novoAlunoProcesso);
@@ -106,16 +103,12 @@ export class AlunoProcessoController {
       return;
     }
 
-    await AlunoProcessosRepository.save(novoAlunoProcesso);
+    await AlunoProcessosRepository.save(processoAtivo);
 
-    const {
-      aluno: _,
-      aluno_matricula: __,
-      ...novoAlunoProcessoOtimizado
-    } = novoAlunoProcesso;
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
 
     res.status(200).json({
-      message: "Documentos atualizados com sucesso.",
+      message: "Documentos enviados/atualizados com sucesso.",
       processoId: processoAtivo.id,
       prazo_final: processoAtivo.prazo_final,
       ...gerarUrlsArquivos(processoAtivo, baseUrl),
