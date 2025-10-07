@@ -14,11 +14,17 @@ export class Aluno_Processo {
   @Matches(/\.pdf$/i, { message: "O arquivo deve ser um PDF" })
   formulario_educard: string | null;
 
+  @Column({ type: "boolean", default: false })
+  formulario_educard_validado: boolean;
+
   @Column({ type: "varchar", nullable: true })
   @IsOptional()
   @IsString()
   @Matches(/\.pdf$/i, { message: "O arquivo deve ser um PDF" })
   declaracao_matricula: string | null;
+
+  @Column({ type: "boolean", default: false })
+  declaracao_matricula_validado: boolean;
 
   @Column({ type: "varchar", nullable: true })
   @IsOptional()
@@ -28,6 +34,9 @@ export class Aluno_Processo {
   })
   comprovante_pagamento: string | null;
 
+  @Column({ type: "boolean", default: false })
+  comprovante_pagamento_validado: boolean;
+
   @Column({ type: "varchar", nullable: true })
   @IsOptional()
   @IsString()
@@ -36,6 +45,9 @@ export class Aluno_Processo {
   })
   comprovante_residencia: string | null;
 
+  @Column({ type: "boolean", default: false })
+  comprovante_residencia_validado: boolean;
+
   @Column({ type: "varchar", nullable: true })
   @IsOptional()
   @IsString()
@@ -43,6 +55,9 @@ export class Aluno_Processo {
     message: "O arquivo deve ser JPG, JPEG ou PNG",
   })
   rg_frente_ou_verso: string | null;
+
+  @Column({ type: "boolean", default: false })
+  rg_frente_ou_verso_validado: boolean;
 
   @Column({ type: "boolean", default: false })
   liberado: boolean;

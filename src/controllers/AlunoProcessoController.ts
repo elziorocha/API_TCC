@@ -54,19 +54,31 @@ export class AlunoProcessoController {
       );
     }
 
-    processoAtivo.formulario_educard =
-      files.formulario_educard?.[0]?.path ?? processoAtivo.formulario_educard;
-    processoAtivo.declaracao_matricula =
-      files.declaracao_matricula?.[0]?.path ??
-      processoAtivo.declaracao_matricula;
-    processoAtivo.comprovante_pagamento =
-      files.comprovante_pagamento?.[0]?.path ??
-      processoAtivo.comprovante_pagamento;
-    processoAtivo.comprovante_residencia =
-      files.comprovante_residencia?.[0]?.path ??
-      processoAtivo.comprovante_residencia;
-    processoAtivo.rg_frente_ou_verso =
-      files.rg_frente_ou_verso?.[0]?.path ?? processoAtivo.rg_frente_ou_verso;
+    if (files.formulario_educard?.[0]) {
+      processoAtivo.formulario_educard = files.formulario_educard[0].path;
+      processoAtivo.formulario_educard_validado = false;
+    }
+
+    if (files.declaracao_matricula?.[0]) {
+      processoAtivo.declaracao_matricula = files.declaracao_matricula[0].path;
+      processoAtivo.declaracao_matricula_validado = false;
+    }
+
+    if (files.comprovante_pagamento?.[0]) {
+      processoAtivo.comprovante_pagamento = files.comprovante_pagamento[0].path;
+      processoAtivo.comprovante_pagamento_validado = false;
+    }
+
+    if (files.comprovante_residencia?.[0]) {
+      processoAtivo.comprovante_residencia =
+        files.comprovante_residencia[0].path;
+      processoAtivo.comprovante_residencia_validado = false;
+    }
+
+    if (files.rg_frente_ou_verso?.[0]) {
+      processoAtivo.rg_frente_ou_verso = files.rg_frente_ou_verso[0].path;
+      processoAtivo.rg_frente_ou_verso_validado = false;
+    }
 
     const anoAtual = new Date().getFullYear();
     const matriculaVigente = aluno.aluno_matricula?.find(
@@ -165,7 +177,7 @@ export class AlunoProcessoController {
 
     if (!matriculaVigente) {
       throw new UnprocessableEntityError(
-        "Para iniciar um Processo Digital, é necessário ter uma matrícula vigente."
+        "Para iniciar um Processo Digital é necessário ter uma matrícula vigente."
       );
     }
 
@@ -180,10 +192,15 @@ export class AlunoProcessoController {
 
     const novoProcesso = AlunoProcessosRepository.create({
       formulario_educard: null,
+      formulario_educard_validado: false,
       declaracao_matricula: null,
+      declaracao_matricula_validado: false,
       comprovante_pagamento: null,
+      comprovante_pagamento_validado: false,
       comprovante_residencia: null,
+      comprovante_residencia_validado: false,
       rg_frente_ou_verso: null,
+      rg_frente_ou_verso_validado: false,
       liberado: false,
       aluno,
       aluno_matricula: matriculaVigente,
@@ -200,6 +217,5 @@ export class AlunoProcessoController {
       prazo_final: novoProcesso.prazo_final,
       existente: false,
     });
-    return;
   }
 }

@@ -33,6 +33,11 @@ routes.post("/api/aluno/matricula", new AlunoMatriculaController().create);
 routes.get("/api/aluno/matricula", new AlunoMatriculaController().list);
 
 routes.post(
+  "/api/aluno/processo/iniciar",
+  alunoProcessoController.iniciarProcesso.bind(alunoProcessoController)
+);
+
+routes.post(
   "/api/aluno/processo",
   uploadImagem.fields([
     { name: "formulario_educard", maxCount: 1 },
@@ -47,11 +52,6 @@ routes.post(
 routes.get(
   "/api/aluno/processo",
   alunoProcessoController.list.bind(alunoProcessoController)
-);
-
-routes.post(
-  "/api/aluno/processo/iniciar",
-  alunoProcessoController.iniciarProcesso.bind(alunoProcessoController)
 );
 
 routes.post("/api/aluno/logout", new AuthController().logout);
