@@ -50,7 +50,7 @@ export class AlunoProcessoController {
       !aluno.aluno_responsavel
     ) {
       throw new UnprocessableEntityError(
-        "Para enviar documentos, o aluno precisa ter Documento, Endereço e Responsáveis cadastrados."
+        "Para enviar documentos do processo, o aluno precisa ter Documentos, Endereço e Responsáveis cadastrados."
       );
     }
 
@@ -168,6 +168,22 @@ export class AlunoProcessoController {
     });
 
     if (!aluno) throw new NotFoundError("Aluno não encontrado.");
+
+    if (!aluno.tipo_cartao) {
+      throw new UnprocessableEntityError(
+        "Declare o tipo de cartão antes de começar um processo!"
+      );
+    }
+
+    if (
+      !aluno.aluno_documento ||
+      !aluno.aluno_endereco ||
+      !aluno.aluno_responsavel
+    ) {
+      throw new UnprocessableEntityError(
+        "Para criar um processo, o aluno precisa ter Documentos, Endereço e Responsáveis cadastrados."
+      );
+    }
 
     const anoAtual = new Date().getFullYear();
     const matriculaVigente = aluno.aluno_matricula?.find(
