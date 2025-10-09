@@ -54,6 +54,11 @@ routes.get(
   alunoProcessoController.list.bind(alunoProcessoController)
 );
 
+routes.delete(
+  "/api/aluno/processo/arquivo/:campo",
+  alunoProcessoController.removerArquivo.bind(alunoProcessoController)
+);
+
 routes.post("/api/aluno/logout", new AuthController().logout);
 
 export default routes;

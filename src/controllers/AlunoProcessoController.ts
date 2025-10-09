@@ -11,6 +11,8 @@ import { AlunoProcessosRepository, AlunoRepository } from "../repositories";
 import { plainToInstance } from "class-transformer";
 import { Aluno_Processo } from "../entities/Aluno_Processo";
 import { gerarUrlsArquivos } from "../helpers/gerar-url-arquivos";
+import fs from "fs";
+import path from "path";
 
 export class AlunoProcessoController {
   async create(req: Request, res: Response) {
@@ -233,5 +235,58 @@ export class AlunoProcessoController {
       prazo_final: novoProcesso.prazo_final,
       existente: false,
     });
+  }
+
+  async removerArquivo(req: Request, res: Response) {
+    const alunoId = req.alunoLogin.id;
+    const { campo } = req.params;
+
+    const camposValidos = [
+      "formulario_educard",
+      "declaracao_matricula",
+      "comprovante_pagamento",
+      "comprovante_residencia",
+      "rg_frente_ou_verso",
+    ];
+
+    if (!camposValidos.includes(campo)) {
+      throw new UnprocessableEntityError("Campo de arquivo inválido.");
+    }
+
+    const processo = await AlunoProcessosRepository.findOne({
+      where: { aluno: { id: alunoId }, liberado: false },
+      relations: ["aluno"],
+    });
+
+    if (!processo) {
+      throw new NotFoundError("Nenhum processo ativo encontrado.");
+    }
+
+    const caminhoArquivo = processo[campo as keyof typeof processo] as
+      | string
+      | null;
+
+    if (!caminhoArquivo) {
+      throw new NotFoundError("Nenhum arquivo encontrado para este campo.");
+    }
+
+    try {
+      const caminhoAbsoluto = path.resolve(caminhoArquivo);
+      if (fs.existsSync(caminhoAbsoluto)) {
+        fs.unlinkSync(caminhoAbsoluto);
+      }
+    } catch (error) {
+      console.error("Erro ao deletar arquivo do disco:", error);
+    }
+
+    (processo as any)[campo] = null;
+    (processo as any)[`${campo}_validado`] = false;
+
+    await AlunoProcessosRepository.save(processo);
+
+    res.status(200).json({
+      message: `Arquivo '${campo}' removido com sucesso.`,
+    });
+    return;
   }
 }
