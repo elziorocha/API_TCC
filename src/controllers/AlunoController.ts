@@ -12,7 +12,12 @@ export class AlunoController {
 
     const aluno = await AlunoRepository.findOne({
       where: { id: alunoId },
-      relations: ["aluno_documento", "aluno_endereco", "aluno_responsavel", "aluno_matricula"],
+      relations: [
+        "aluno_documento",
+        "aluno_endereco",
+        "aluno_responsavel",
+        "aluno_matricula",
+      ],
     });
 
     if (!aluno) {
@@ -21,5 +26,19 @@ export class AlunoController {
 
     const { id: _, senha: __, ...alunoSemSenha } = aluno;
     res.status(200).json(alunoSemSenha);
+  }
+
+  async atualizarTipoCartao(req: Request, res: Response) {
+    const alunoId = req.alunoLogin?.id;
+    const { tipo_cartao } = req.body;
+
+    const aluno = await AlunoRepository.findOneBy({ id: Number(alunoId) });
+    if (!aluno) throw new NotFoundError("Aluno não encontrado.");
+
+    aluno.tipo_cartao = tipo_cartao;
+    await AlunoRepository.save(aluno);
+
+    res.status(200).json(aluno);
+    return;
   }
 }
