@@ -24,7 +24,7 @@ export interface AlunoInterface {
   nome: string;
   telefone: string;
   data_nascimento: Date;
-  tipo_cartao: TipoCartao;
+  tipo_cartao: TipoCartao | null;
   criado_em: Date;
 }
 

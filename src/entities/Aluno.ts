@@ -49,7 +49,7 @@ export class Aluno {
     enum: TipoCartao,
     nullable: true,
   })
-  tipo_cartao: TipoCartao;
+  tipo_cartao: TipoCartao | null;
 
   @Column({
     type: "timestamp",
