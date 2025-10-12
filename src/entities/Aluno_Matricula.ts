@@ -40,7 +40,7 @@ export class Aluno_Matricula {
 
   @Column({ type: "enum", enum: GrauEscolaridade, nullable: false })
   @IsEnum(GrauEscolaridade, { message: "Grau de escolaridade inválido." })
-  grau_scolaridade: GrauEscolaridade;
+  grau_escolaridade: GrauEscolaridade;
 
   @Column({ type: "int", nullable: false, default: 0 })
   @IsInt({ message: "Série ou período deve ser um número." })

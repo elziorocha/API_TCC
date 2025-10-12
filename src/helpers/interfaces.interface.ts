@@ -54,7 +54,7 @@ export interface AlunoMatriculaInterface {
   instituicao: string;
   data_inicio: Date;
   data_fim: Date;
-  grau_scolaridade: GrauEscolaridade;
+  grau_escolaridade: GrauEscolaridade;
   serie_ou_periodo: number;
   curso?: string;
   turno: Turno;

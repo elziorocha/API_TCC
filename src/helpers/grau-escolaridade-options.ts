@@ -17,12 +17,12 @@ export function optionCamposPorGrau(
     GrauEscolaridade.TECNICO_ANUAL,
   ];
 
-  if (!grausComCGM.includes(dadosProcessados.grau_scolaridade)) {
+  if (!grausComCGM.includes(dadosProcessados.grau_escolaridade)) {
     dadosProcessados.cgm = undefined;
     dadosProcessados.distancia_instituicao = undefined;
   }
 
-  if (!grausComCurso.includes(dadosProcessados.grau_scolaridade)) {
+  if (!grausComCurso.includes(dadosProcessados.grau_escolaridade)) {
     dadosProcessados.curso = undefined;
   }
 
