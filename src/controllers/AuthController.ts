@@ -85,7 +85,7 @@ export class AuthController {
     return;
   }
 
-  async login(req: Request<AlunoLoginInterface>, res: Response) {
+  async login(req: Request<any, any, AlunoLoginInterface>, res: Response) {
     const authData = req.body;
 
     const alunoAuth = await AlunoRepository.findOneBy({
@@ -135,7 +135,7 @@ export class AuthController {
     res: Response
   ) {
     const { senhaAntiga, novaSenha } = req.body;
-    const alunoId = req.params.id;
+    const alunoId = req.alunoLogin.id;
 
     const aluno = await AlunoRepository.findOneBy({ id: alunoId });
 
