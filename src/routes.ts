@@ -18,8 +18,8 @@ routes.post("/api/aluno/login", new AuthController().login);
 
 routes.use(authMiddleware);
 routes.get("/api/aluno", new AlunoController().list);
-routes.patch(
-  "/api/aluno/alterar-tipo-cartao",
+routes.put(
+  "/api/aluno/alterar-cartao",
   new AlunoController().atualizarTipoCartao
 );
 routes.put("/api/aluno/alterar-senha", new AuthController().alterarSenha);
