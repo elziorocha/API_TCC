@@ -8,8 +8,8 @@
     ],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "module": "Node16",
+    "moduleResolution": "Node16",
     "resolveJsonModule": true,
     "allowJs": true,
     "outDir": "./dist",
@@ -21,7 +21,7 @@
     "typeRoots": [
       "./src/@types"
     ],
-    "ignoreDeprecations": "6.0"
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*"
