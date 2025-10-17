@@ -25,5 +25,10 @@ AppDataSource.initialize().then(() => {
 
   cronsDoSistema();
 
+  console.log("Registered routes:");
+  routes.stack.forEach((r: any) => {
+    if (r.route && r.route.path) console.log(r.route.path);
+  });
+
   return app.listen(process.env.PORT);
 });
