@@ -5,12 +5,15 @@ import { AppDataSource } from "./data-source";
 import routes from "./routes";
 import { errorMiddleware } from "./middlewares/errorMiddleware";
 import { cronsDoSistema } from "./helpers/cron/cron";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 AppDataSource.initialize().then(() => {
   const app = express();
   app.use(
     cors({
-      origin: "http://localhost:5173",
+      origin: process.env.CORS_ORIGIN?.split(",") || "*",
       credentials: true,
     })
   );
