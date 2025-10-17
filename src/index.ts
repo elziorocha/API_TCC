@@ -9,21 +9,34 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-AppDataSource.initialize().then(() => {
-  const app = express();
-  app.use(
-    cors({
-      origin: process.env.CORS_ORIGIN?.split(",") || "*",
-      credentials: true,
-    })
-  );
-  app.use(express.json());
+// Log da variável de ambiente
+console.log("DATABASE_URL:", process.env.DATABASE_URL);
 
-  app.use("/uploads", express.static("uploads"));
-  app.use(routes);
-  app.use(errorMiddleware);
+AppDataSource.initialize()
+  .then(() => {
+    console.log("✅ Data Source has been initialized!");
 
-  cronsDoSistema();
+    const app = express();
 
-  return app.listen(process.env.PORT);
-});
+    app.use(
+      cors({
+        origin: process.env.CORS_ORIGIN?.split(",") || "*",
+        credentials: true,
+      })
+    );
+    app.use(express.json());
+
+    app.use("/uploads", express.static("uploads"));
+    app.use(routes);
+    app.use(errorMiddleware);
+
+    cronsDoSistema();
+
+    const port = process.env.PORT || 3000;
+    app.listen(port, () => {
+      console.log(`🚀 Server running on port ${port}`);
+    });
+  })
+  .catch((err) => {
+    console.error("❌ Error during Data Source initialization:", err);
+  });
