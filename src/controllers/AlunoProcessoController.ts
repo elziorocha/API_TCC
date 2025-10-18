@@ -11,13 +11,18 @@ import { AlunoProcessosRepository, AlunoRepository } from "../repositories";
 import { plainToInstance } from "class-transformer";
 import { Aluno_Processo } from "../entities/Aluno_Processo";
 import { gerarUrlsArquivos } from "../helpers/gerar-url-arquivos";
-import fs from "fs";
-import path from "path";
+import AWS from "aws-sdk";
+
+const s3 = new AWS.S3({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION,
+});
 
 export class AlunoProcessoController {
   async create(req: Request, res: Response) {
     const alunoId = req.alunoLogin.id;
-    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+    const files = req.files as any;
 
     const processoAtivo = await AlunoProcessosRepository.findOne({
       where: { aluno: { id: alunoId }, liberado: false },
@@ -56,31 +61,20 @@ export class AlunoProcessoController {
       );
     }
 
-    if (files.formulario_educard?.[0]) {
-      processoAtivo.formulario_educard = files.formulario_educard[0].path;
-      processoAtivo.formulario_educard_validado = false;
-    }
+    const camposArquivos = [
+      "formulario_educard",
+      "declaracao_matricula",
+      "comprovante_pagamento",
+      "comprovante_residencia",
+      "rg_frente_ou_verso",
+    ] as const;
 
-    if (files.declaracao_matricula?.[0]) {
-      processoAtivo.declaracao_matricula = files.declaracao_matricula[0].path;
-      processoAtivo.declaracao_matricula_validado = false;
-    }
-
-    if (files.comprovante_pagamento?.[0]) {
-      processoAtivo.comprovante_pagamento = files.comprovante_pagamento[0].path;
-      processoAtivo.comprovante_pagamento_validado = false;
-    }
-
-    if (files.comprovante_residencia?.[0]) {
-      processoAtivo.comprovante_residencia =
-        files.comprovante_residencia[0].path;
-      processoAtivo.comprovante_residencia_validado = false;
-    }
-
-    if (files.rg_frente_ou_verso?.[0]) {
-      processoAtivo.rg_frente_ou_verso = files.rg_frente_ou_verso[0].path;
-      processoAtivo.rg_frente_ou_verso_validado = false;
-    }
+    camposArquivos.forEach((campo) => {
+      if (files[campo]?.[0]) {
+        processoAtivo[campo] = files[campo][0].location;
+        processoAtivo[`${campo}_validado`] = false;
+      }
+    });
 
     const anoAtual = new Date().getFullYear();
     const matriculaVigente = aluno.aluno_matricula?.find(
@@ -247,9 +241,9 @@ export class AlunoProcessoController {
       "comprovante_pagamento",
       "comprovante_residencia",
       "rg_frente_ou_verso",
-    ];
+    ] as const;
 
-    if (!camposValidos.includes(campo)) {
+    if (!camposValidos.includes(campo as any)) {
       throw new UnprocessableEntityError("Campo de arquivo inválido.");
     }
 
@@ -271,12 +265,14 @@ export class AlunoProcessoController {
     }
 
     try {
-      const caminhoAbsoluto = path.resolve(caminhoArquivo);
-      if (fs.existsSync(caminhoAbsoluto)) {
-        fs.unlinkSync(caminhoAbsoluto);
+      const key = caminhoArquivo.split(".com/")[1];
+      if (key) {
+        await s3
+          .deleteObject({ Bucket: process.env.AWS_BUCKET_NAME!, Key: key })
+          .promise();
       }
     } catch (error) {
-      console.error("Erro ao deletar arquivo do disco:", error);
+      console.error("Erro ao deletar arquivo do S3:", error);
     }
 
     (processo as any)[campo] = null;
@@ -287,6 +283,5 @@ export class AlunoProcessoController {
     res.status(200).json({
       message: `Arquivo '${campo}' removido com sucesso.`,
     });
-    return;
   }
 }

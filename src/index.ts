@@ -11,7 +11,6 @@ dotenv.config();
 
 AppDataSource.initialize().then(() => {
   const app = express();
-
   app.use(
     cors({
       origin: process.env.CORS_ORIGIN?.split(",") || "*",
@@ -26,32 +25,10 @@ AppDataSource.initialize().then(() => {
 
   cronsDoSistema();
 
-  const PORT = process.env.PORT || 3000;
-  const server = app.listen(PORT, () =>
-    console.log(`Server running on port ${PORT}`)
-  );
+  console.log("Registered routes:");
+  routes.stack.forEach((r: any) => {
+    if (r.route && r.route.path) console.log(r.route.path);
+  });
 
-  // Função para listar todas as rotas
-  function listRoutes(stack: any[], prefix = "") {
-    stack.forEach((middleware) => {
-      if (middleware.route) {
-        // rota registrada diretamente
-        const methods = Object.keys(middleware.route.methods)
-          .map((m) => m.toUpperCase())
-          .join(", ");
-        console.log(`${methods} ${prefix}${middleware.route.path}`);
-      } else if (middleware.name === "router" && middleware.handle.stack) {
-        // sub-router
-        const newPrefix = middleware.regexp
-          .toString()
-          .replace(/^\/\^\\/, "/")
-          .replace(/\\\/\?\(\?\=\\\/\|\$\)\/i$/, "")
-          .replace(/\\\//g, "/");
-        listRoutes(middleware.handle.stack, prefix + newPrefix);
-      }
-    });
-  }
-
-  console.log("\nRegistered routes:");
-  listRoutes(app._router.stack);
+  return app.listen(process.env.PORT);
 });

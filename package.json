@@ -16,6 +16,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.913.0",
+    "aws-sdk": "^2.1692.0",
     "bcrypt": "^6.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
@@ -25,6 +27,7 @@
     "express-async-errors": "^3.1.1",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
+    "multer-s3": "^3.0.1",
     "mysql2": "^3.14.0",
     "node-cron": "^4.2.1",
     "nodemon": "^3.1.9",
@@ -33,11 +36,13 @@
     "typeorm": "^0.3.22"
   },
   "devDependencies": {
+    "@types/aws-sdk": "^0.0.42",
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.1",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/multer": "^2.0.0",
+    "@types/multer-s3": "^3.0.3",
     "@types/node": "^24.8.1",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
