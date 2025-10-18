@@ -2,37 +2,23 @@ import { AlunoProcessoInterface } from "./interfaces.interface";
 
 export function gerarUrlsArquivos(
   processo: AlunoProcessoInterface,
-  baseUrl: string
+  baseUrl?: string
 ) {
+  const resolveUrl = (caminho?: string | null) => {
+    if (!caminho) return null;
+
+    if (caminho.startsWith("http")) return caminho;
+
+    return `${baseUrl}/uploads/${
+      caminho.replace(/\\/g, "/").split("uploads/")[1]
+    }`;
+  };
+
   return {
-    formulario_educard_url: processo.formulario_educard
-      ? `${baseUrl}/uploads/${
-          processo.formulario_educard.replace(/\\/g, "/").split("uploads/")[1]
-        }`
-      : null,
-    declaracao_matricula_url: processo.declaracao_matricula
-      ? `${baseUrl}/uploads/${
-          processo.declaracao_matricula.replace(/\\/g, "/").split("uploads/")[1]
-        }`
-      : null,
-    comprovante_pagamento_url: processo.comprovante_pagamento
-      ? `${baseUrl}/uploads/${
-          processo.comprovante_pagamento
-            .replace(/\\/g, "/")
-            .split("uploads/")[1]
-        }`
-      : null,
-    comprovante_residencia_url: processo.comprovante_residencia
-      ? `${baseUrl}/uploads/${
-          processo.comprovante_residencia
-            .replace(/\\/g, "/")
-            .split("uploads/")[1]
-        }`
-      : null,
-    rg_frente_ou_verso_url: processo.rg_frente_ou_verso
-      ? `${baseUrl}/uploads/${
-          processo.rg_frente_ou_verso.replace(/\\/g, "/").split("uploads/")[1]
-        }`
-      : null,
+    formulario_educard_url: resolveUrl(processo.formulario_educard),
+    declaracao_matricula_url: resolveUrl(processo.declaracao_matricula),
+    comprovante_pagamento_url: resolveUrl(processo.comprovante_pagamento),
+    comprovante_residencia_url: resolveUrl(processo.comprovante_residencia),
+    rg_frente_ou_verso_url: resolveUrl(processo.rg_frente_ou_verso),
   };
 }
