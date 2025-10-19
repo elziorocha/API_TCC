@@ -11,12 +11,14 @@ import { AlunoProcessosRepository, AlunoRepository } from "../repositories";
 import { plainToInstance } from "class-transformer";
 import { Aluno_Processo } from "../entities/Aluno_Processo";
 import { gerarUrlsArquivos } from "../helpers/gerar-url-arquivos";
-import AWS from "aws-sdk";
+import { S3Client, DeleteObjectCommand } from "@aws-sdk/client-s3";
 
-const s3 = new AWS.S3({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  region: process.env.AWS_REGION,
+const s3 = new S3Client({
+  region: process.env.AWS_REGION!,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+  },
 });
 
 export class AlunoProcessoController {
@@ -267,9 +269,12 @@ export class AlunoProcessoController {
     try {
       const key = caminhoArquivo.split(".com/")[1];
       if (key) {
-        await s3
-          .deleteObject({ Bucket: process.env.AWS_BUCKET_NAME!, Key: key })
-          .promise();
+        await s3.send(
+          new DeleteObjectCommand({
+            Bucket: process.env.AWS_BUCKET_NAME!,
+            Key: key,
+          })
+        );
       }
     } catch (error) {
       console.error("Erro ao deletar arquivo do S3:", error);
