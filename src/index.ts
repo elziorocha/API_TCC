@@ -6,12 +6,14 @@ import { errorMiddleware } from "./middlewares/errorMiddleware";
 import { cronsDoSistema } from "./helpers/cron/cron";
 import dotenv from "dotenv";
 import { corsIndex } from "./helpers/cors";
+import helmet from "helmet";
 
 dotenv.config();
 
 AppDataSource.initialize().then(() => {
   const app = express();
 
+  app.use(helmet());
   app.use(corsIndex());
   app.use(express.json());
 
