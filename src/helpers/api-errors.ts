@@ -36,3 +36,9 @@ export class UnprocessableEntityError extends ApiError {
     super(message, 422);
   }
 }
+
+export class TooManyRequestsError extends ApiError {
+  constructor(message: string) {
+    super(message, 429);
+  }
+}
