@@ -41,9 +41,17 @@ export class AlunoMatriculaController {
     });
 
     const anoAtual = new Date().getFullYear();
-
     novoAlunoMatricula.status_matricula =
       novoAlunoMatricula.ano_letivo === anoAtual;
+
+    if (
+      new Date(novoAlunoMatricula.data_fim) <
+      new Date(novoAlunoMatricula.data_inicio)
+    ) {
+      throw new UnprocessableEntityError(
+        "A data de término não pode ser anterior à data de início."
+      );
+    }
 
     const errosValidacao = await validate(novoAlunoMatricula);
 
