@@ -20,7 +20,10 @@ export class Aluno {
   id: number;
 
   @Column({ unique: true, nullable: false })
-  @IsEmail({}, { message: "Insira um endereço de email válido." })
+  @IsEmail(
+    { require_tld: true },
+    { message: "Insira um endereço de email válido." }
+  )
   email: string;
 
   @Column({ nullable: false })
