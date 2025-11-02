@@ -8,7 +8,7 @@ import { AlunoResponsavelController } from "./controllers/AlunoResponsavelContro
 import { AlunoMatriculaController } from "./controllers/AlunoMatriculaController";
 import { AlunoProcessoController } from "./controllers/AlunoProcessoController";
 import { uploadImagem } from "./helpers/multer-config";
-import { loginRateLimiter } from "./helpers/loginRateLimiter";
+import { loginRateLimiter } from "./middlewares/loginRateLimiterMiddleware";
 
 const alunoProcessoController = new AlunoProcessoController();
 const authController = new AuthController();
