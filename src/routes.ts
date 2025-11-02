@@ -8,7 +8,7 @@ import { AlunoResponsavelController } from "./controllers/AlunoResponsavelContro
 import { AlunoMatriculaController } from "./controllers/AlunoMatriculaController";
 import { AlunoProcessoController } from "./controllers/AlunoProcessoController";
 import { uploadImagem } from "./helpers/multer-config";
-import { loginRateLimiter } from "./middlewares/loginRateLimiterMiddleware";
+import { loginRateLimiterMiddleware } from "./middlewares/loginRateLimiterMiddleware";
 
 const alunoProcessoController = new AlunoProcessoController();
 const authController = new AuthController();
@@ -16,7 +16,7 @@ const authController = new AuthController();
 const routes = Router();
 
 routes.post("/api/aluno/registro", new AuthController().create);
-routes.post("/api/aluno/login", loginRateLimiter, (req, res) =>
+routes.post("/api/aluno/login", loginRateLimiterMiddleware, (req, res) =>
   authController.login(req, res)
 );
 

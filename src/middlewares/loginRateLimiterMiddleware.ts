@@ -1,7 +1,7 @@
 import rateLimit from "express-rate-limit";
 import { TooManyRequestsError } from "../helpers/api-errors";
 
-export const loginRateLimiter = rateLimit({
+export const loginRateLimiterMiddleware = rateLimit({
   windowMs: 10 * 60 * 1000,
   max: 10,
   standardHeaders: true,
