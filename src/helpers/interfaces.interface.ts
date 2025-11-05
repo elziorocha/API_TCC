@@ -26,6 +26,9 @@ export interface AlunoInterface {
   data_nascimento: Date;
   tipo_cartao: TipoCartao | null;
   criado_em: Date;
+  email_verificado: boolean | null;
+  codigo_verificacao: string | null;
+  codigo_expira_em: Date | null;
 }
 
 export interface AlunoDocumentoInterface {
