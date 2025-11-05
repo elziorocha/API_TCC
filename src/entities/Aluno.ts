@@ -64,6 +64,15 @@ export class Aluno {
   @Column({ default: 0 })
   tokenVersion: number;
 
+  @Column({ default: false })
+  email_verificado: boolean;
+
+  @Column({ type: "varchar", length: 10, nullable: true })
+  codigo_verificacao!: string | null;
+
+  @Column({ type: "timestamp", nullable: true })
+  codigo_expira_em!: Date | null;
+
   @OneToOne(() => Aluno_Documento, {
     nullable: true,
     cascade: true,

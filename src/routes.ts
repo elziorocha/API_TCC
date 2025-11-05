@@ -16,6 +16,10 @@ const authController = new AuthController();
 const routes = Router();
 
 routes.post("/api/aluno/registro", new AuthController().create);
+routes.post(
+  "/api/aluno/verificar-email",
+  authController.verificarEmail.bind(authController)
+);
 routes.post("/api/aluno/login", loginRateLimiterMiddleware, (req, res) =>
   authController.login(req, res)
 );

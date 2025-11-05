@@ -12,12 +12,13 @@ import {
 import { AlunoRepository } from "../repositories";
 import { plainToInstance } from "class-transformer";
 import { ErrosValidacao } from "../helpers/error-validator";
+import {
+  corpoVerificacaoEmail,
+  emailTransporter,
+} from "../helpers/verificar-email";
 
 export class AuthController {
-  async create(
-    req: Request<{ id: string }, any, AlunoInterface>,
-    res: Response
-  ) {
+  async create(req: Request<any, any, AlunoInterface>, res: Response) {
     const alunoData = req.body;
 
     const dataNascimento = new Date(alunoData.data_nascimento);
@@ -61,27 +62,72 @@ export class AuthController {
 
     const senhaCriptografada = await bcrypt.hash(alunoData.senha, 10);
 
+    const codigoVerificacaoEmail = Math.floor(
+      100000 + Math.random() * 900000
+    ).toString();
+
+    const emailExpiraEm = new Date(Date.now() + 10 * 60 * 1000);
+
     const novoAluno = AlunoRepository.create({
       ...alunoData,
       senha: senhaCriptografada,
+      email_verificado: false,
+      codigo_verificacao: codigoVerificacaoEmail,
+      codigo_expira_em: emailExpiraEm,
     });
+
     await AlunoRepository.save(novoAluno);
 
-    const authToken = jwt.sign(
-      { id: novoAluno.id, tokenVersion: novoAluno.tokenVersion },
-      process.env.JWT_PASS ?? "",
-      {
-        expiresIn: "6h",
-      }
-    );
+    const mailOptions = {
+      from: `"Portal do Aluno" <${process.env.EMAIL_USER}>`,
+      to: novoAluno.email,
+      subject: "Código de verificação - Confirmação de e-mail",
+      html: corpoVerificacaoEmail(novoAluno.nome, codigoVerificacaoEmail),
+    };
 
-    const { senha: _, id: __, ...alunoPostDataSemSenha } = novoAluno;
-
-    res.status(201).json({
-      aluno: alunoPostDataSemSenha,
-      token: authToken,
+    await emailTransporter.sendMail(mailOptions).catch(() => {
+      throw new BadRequestError("Falha ao enviar e-mail de confirmação.");
     });
 
+    res.status(201).json({
+      message:
+        "Cadastro realizado! Verifique seu e-mail para confirmar a conta.",
+    });
+  }
+
+  async verificarEmail(req: Request, res: Response) {
+    const { email, codigo } = req.body;
+
+    if (!email || !codigo) {
+      throw new BadRequestError("E-mail e código são obrigatórios.");
+    }
+
+    const aluno = await AlunoRepository.findOneBy({ email });
+
+    if (!aluno) {
+      throw new BadRequestError("Usuário não encontrado.");
+    }
+
+    if (aluno.email_verificado) {
+      res.json({ message: "E-mail já foi verificado." });
+      return;
+    }
+
+    const atualMomento = new Date();
+    if (aluno.codigo_verificacao !== codigo) {
+      throw new BadRequestError("Código inválido.");
+    }
+
+    if (aluno.codigo_expira_em && aluno.codigo_expira_em < atualMomento) {
+      throw new BadRequestError("Código expirado. Solicite um novo.");
+    }
+
+    aluno.email_verificado = true;
+    aluno.codigo_verificacao = null;
+    aluno.codigo_expira_em = null;
+    await AlunoRepository.save(aluno);
+
+    res.json({ message: "E-mail confirmado com sucesso!" });
     return;
   }
 
@@ -94,6 +140,10 @@ export class AuthController {
 
     if (!alunoAuth) {
       throw new BadRequestError("E-mail ou Senha inválidos.");
+    }
+
+    if (!alunoAuth.email_verificado) {
+      throw new BadRequestError("Confirme seu e-mail antes de fazer login.");
     }
 
     const verificarSenha = await bcrypt.compare(
