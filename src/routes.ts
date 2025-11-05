@@ -20,6 +20,10 @@ routes.post(
   "/api/aluno/verificar-email",
   authController.verificarEmail.bind(authController)
 );
+routes.post(
+  "/api/aluno/reenviar-verificacao",
+  authController.reenviarCodigoVerificacaoEmail.bind(authController)
+);
 routes.post("/api/aluno/login", loginRateLimiterMiddleware, (req, res) =>
   authController.login(req, res)
 );

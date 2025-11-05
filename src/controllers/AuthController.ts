@@ -131,6 +131,45 @@ export class AuthController {
     return;
   }
 
+  async reenviarCodigoVerificacaoEmail(req: Request, res: Response) {
+    const { email } = req.body;
+
+    if (!email) {
+      throw new BadRequestError("E-mail é obrigatório.");
+    }
+
+    const aluno = await AlunoRepository.findOneBy({ email });
+
+    if (!aluno) {
+      throw new BadRequestError("Usuário não encontrado.");
+    }
+
+    if (aluno.email_verificado) {
+      throw new BadRequestError("E-mail já verificado.");
+    }
+
+    const novoCodigo = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiraEm = new Date(Date.now() + 10 * 60 * 1000);
+
+    aluno.codigo_verificacao = novoCodigo;
+    aluno.codigo_expira_em = expiraEm;
+    await AlunoRepository.save(aluno);
+
+    const mailOptions = {
+      from: `"Portal do Aluno" <${process.env.EMAIL_USER}>`,
+      to: aluno.email,
+      subject: "Novo código de verificação - Portal do Aluno",
+      html: corpoVerificacaoEmail(aluno.nome, novoCodigo),
+    };
+
+    await emailTransporter.sendMail(mailOptions);
+
+    res.json({
+      message: "Novo código enviado para seu e-mail!",
+    });
+    return;
+  }
+
   async login(req: Request<any, any, AlunoLoginInterface>, res: Response) {
     const authData = req.body;
 
