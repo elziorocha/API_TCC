@@ -85,9 +85,12 @@ export class AuthController {
       html: corpoVerificacaoEmail(novoAluno.nome, codigoVerificacaoEmail),
     };
 
-    await emailTransporter.sendMail(mailOptions).catch(() => {
+    try {
+      await emailTransporter.sendMail(mailOptions);
+    } catch (err) {
+      console.error("ERRO SMTP:", err);
       throw new BadRequestError("Falha ao enviar e-mail de confirmação.");
-    });
+    }
 
     res.status(201).json({
       message:
