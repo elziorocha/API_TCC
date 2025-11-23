@@ -62,39 +62,36 @@ export class AuthController {
 
     const senhaCriptografada = await bcrypt.hash(alunoData.senha, 10);
 
-    const codigoVerificacaoEmail = Math.floor(
-      100000 + Math.random() * 900000
-    ).toString();
-
-    const emailExpiraEm = new Date(Date.now() + 10 * 60 * 1000);
-
+    // ⚠️ Verificação de e-mail DESATIVADA
     const novoAluno = AlunoRepository.create({
       ...alunoData,
       senha: senhaCriptografada,
-      email_verificado: false,
-      codigo_verificacao: codigoVerificacaoEmail,
-      codigo_expira_em: emailExpiraEm,
+      email_verificado: true, // <--- liberado automaticamente
+      codigo_verificacao: null,
+      codigo_expira_em: null,
     });
 
     await AlunoRepository.save(novoAluno);
 
-    const mailOptions = {
-      from: `"Portal do Aluno" <${process.env.EMAIL_USER}>`,
-      to: novoAluno.email,
-      subject: "Código de verificação - Confirmação de e-mail",
-      html: corpoVerificacaoEmail(novoAluno.nome, codigoVerificacaoEmail),
-    };
+    // --- ENVIO DE EMAIL DESATIVADO TEMPORARIAMENTE ---
+    // const mailOptions = {
+    //   from: `"Portal do Aluno" <${process.env.EMAIL_USER}>`,
+    //   to: novoAluno.email,
+    //   subject: "Código de verificação - Confirmação de e-mail",
+    //   html: corpoVerificacaoEmail(novoAluno.nome, codigoVerificacaoEmail),
+    // };
 
-    try {
-      await emailTransporter.sendMail(mailOptions);
-    } catch (err) {
-      console.error("ERRO SMTP:", err);
-      throw new BadRequestError("Falha ao enviar e-mail de confirmação.");
-    }
+    // try {
+    //   await emailTransporter.sendMail(mailOptions);
+    // } catch (err) {
+    //   console.error("ERRO SMTP:", err);
+    //   throw new BadRequestError("Falha ao enviar e-mail de confirmação.");
+    // }
+    // --------------------------------------------------
 
     res.status(201).json({
       message:
-        "Cadastro realizado! Verifique seu e-mail para confirmar a conta.",
+        "Cadastro realizado com sucesso! (Verificação desativada temporariamente)",
     });
   }
 
